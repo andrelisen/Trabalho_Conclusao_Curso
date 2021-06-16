@@ -31,10 +31,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
-        title: Text("TennisGame Physio"),
-        centerTitle: true,
-      ),
+      // appBar: new AppBar(
+      //   title: Text("TennisGame Physio"),
+      //   centerTitle: true,
+      // ),
       body: ListView(
         children: [
           Container(
@@ -46,7 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 45,
               child: (ElevatedButton(
                 child: Text("INICIAR CAPTURA"),
-                onPressed: () { //redireciona para a tela de selecionar módulo hc-05
+                onPressed: () {
+                  //redireciona para a tela de selecionar módulo hc-05
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -4,19 +4,22 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-
-    Vector3 initialPos; //posicao inicial da bolinha
-
+    Vector3 initialPos;
     // Start is called before the first frame update
     void Start()
     {
-        initialPos = transform.position;//captura posicao inicial da bolinha
+        initialPos = transform.position;
     }
 
-    private void OnCollisionEnter(Collision collision){
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    private void OnCollisionEnter(Collision collision) {
         if(collision.transform.CompareTag("Wall")){
-            GetComponent<Rigidbody>().velocity = Vector3.zero; 
-            //coloca bola na posição inicial
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
             transform.position = initialPos;
         }
     }

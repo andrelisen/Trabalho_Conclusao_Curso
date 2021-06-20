@@ -10,7 +10,9 @@ public class Bot : MonoBehaviour
     public Transform aimTarget;
 
     Vector3 targetPosition;
-    float force = 13;
+    float force = 15;
+    
+    public Transform[] targets;
 
     // Start is called before the first frame update
     void Start()
@@ -30,14 +32,20 @@ public class Bot : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
     }
 
+    //função para retornar aleatoriamente uma posição p/ rebate da bolinha pelo bot - 3 opções por enquanto
+    Vector3 PickTarget(){
+        int randomValue =  Random.Range(0, targets.Length);
+        return targets[randomValue].position;
+    }
+
     private void OnTriggerEnter(Collider other) {
         //verifica se a colisão foi com a bola
         if(other.CompareTag("Ball")){
-            Vector3 dir = aimTarget.position - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
+            Vector3 dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
             other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0);
 
             Vector3 ballDir = ball.position - transform.position;
-
+            
         }
     }
 }

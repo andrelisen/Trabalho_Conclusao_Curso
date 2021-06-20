@@ -5,16 +5,18 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public Transform aimTarget; //alvo para onde a bolinha será lançada para o lado do bot
-    float speed = 5f; //velocidade da raquete que será multiplicada pela posição
+    float speed = 7.5f; //velocidade da raquete que será multiplicada pela posição
     float force = 15;
     bool hitting;
 
     public Transform ball;
+    
+    Vector3 aimTargetPosition;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        aimTargetPosition = aimTarget.position;
     }
 
     // Update is called once per frame
@@ -51,7 +53,7 @@ public class Player : MonoBehaviour
             other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0);
 
             Vector3 ballDir = ball.position - transform.position;
-
+            aimTarget.position = aimTargetPosition;
         }
     }
 

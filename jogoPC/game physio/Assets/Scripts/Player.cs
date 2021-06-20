@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     float force = 15;
     bool hitting;
 
+    public Transform ball;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +49,8 @@ public class Player : MonoBehaviour
         if(other.CompareTag("Ball")){
             Vector3 dir = aimTarget.position - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
             other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0);
+
+            Vector3 ballDir = ball.position - transform.position;
 
         }
     }

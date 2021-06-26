@@ -1,8 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:sensors/sensors.dart';
 import 'package:coletadados_tennis/selecionaModulo.dart';
 
 void main() {

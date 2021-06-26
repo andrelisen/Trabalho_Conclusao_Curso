@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:sensors/sensors.dart';
-import 'dart:math';
 
 class ChatPage extends StatefulWidget {
   final BluetoothDevice server;
@@ -226,7 +225,9 @@ class _ChatPage extends State<ChatPage> {
   //envia dados via bluetooth
   void _sendMessage(String saida) async {
     print("Enviando uma mensagem ao módulo!");
-    connection.output.add(utf8.encode(saida)); //emite saida para o modulo
+    saida = saida.trim();
+    connection.output
+        .add(utf8.encode(saida + "\r\n")); //emite saida para o modulo
   }
 
   //Captura dados do sensor acelerömetro desprezando a gravidade
@@ -282,13 +283,18 @@ class _ChatPage extends State<ChatPage> {
       // print("Em z:" + gz.toStringAsFixed(3));
       // print("------");
 
+      // setState(() {
+      //   _aceleracaoX = ax.toStringAsFixed(3);
+      //   _aceleracaoY = ay.toStringAsFixed(3);
+      //   _aceleracaoZ = az.toStringAsFixed(3);
+      //   _sendMessage(_aceleracaoX);
+      // });
       setState(() {
-        _aceleracaoX = ax.toStringAsFixed(3);
-        _aceleracaoY = ay.toStringAsFixed(3);
-        _aceleracaoZ = az.toStringAsFixed(3);
+        _aceleracaoX = ax.toStringAsFixed(3) + ";";
+        _aceleracaoY = ay.toStringAsFixed(3) + ";";
+        _aceleracaoZ = az.toStringAsFixed(3) + ";";
         _sendMessage(_aceleracaoX);
       });
-
       var dDay = DateTime.now();
 
       int difference = dDay.difference(leituraAnterior).inSeconds;

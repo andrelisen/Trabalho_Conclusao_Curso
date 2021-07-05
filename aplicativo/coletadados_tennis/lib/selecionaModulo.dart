@@ -3,9 +3,7 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:coletadados_tennis/connection.dart';
 import 'package:coletadados_tennis/captura.dart';
 
-
 class PaginaLista extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,23 +40,22 @@ class PaginaLista extends StatelessWidget {
   }
 }
 
-
 //widget sem estado
 class SelecionaDispositivo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SelectBondedDevicePage(
-        onCahtPage: (device1) {
-          BluetoothDevice device = device1;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return ChatPage(server: device);
-              },
-            ),
-          );
-        },
-      );
+      onCahtPage: (device1) {
+        BluetoothDevice device = device1;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return AceleroPage(server: device);
+            },
+          ),
+        );
+      },
+    );
   }
 }

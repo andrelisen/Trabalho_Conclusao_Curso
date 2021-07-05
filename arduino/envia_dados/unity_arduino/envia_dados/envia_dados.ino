@@ -14,20 +14,30 @@ void setup() {
   //Seta porta serial de comunicação
   Serial.begin(9600);
   Serial2.begin(9600); //TX2, RX2 
+  Serial.flush();
+  Serial2.flush();
   //led apenas para testes de recebimento/envio de dados
   pinMode(53, OUTPUT);
 }
 
 void loop() {
-
+  //comunicaçao smartphone - arduino - unity
   if(Serial2.available()){
     Serial.write(Serial2.read());
+    Serial2.flush();
   }
-  delay(20);
-  
-  //SITE QUE TEM UMA BOA EXPLICAÇÃO DE CNCATENAÇÃO DE BYTES E DEPOIS MUDA PARA CHAR 
-  //https://www.codeproject.com/Articles/1254611/Bluetooth-Messenger
+  delay(50);
 
+  //Comunicaçao unity - arduino 
+//  if(Serial.available()){
+//    data = Serial.read();
+//    if(data == '1'){
+//      digitalWrite(53, HIGH);
+//      delay(1000);
+//      digitalWrite(53, LOW);
+//      delay(1000);
+//    }
+//  }
   
   //Códigos abaixo funcionam mas com bug de delay dos dados até a unity
   //Se houve recebimento de alguma informação
@@ -40,15 +50,6 @@ void loop() {
 //      Serial.flush();
 //      delay(20);    
 //  }
-  //Comunicaçao efetuada da Unity para o Arduino 
-//  while(Serial.available()){
-//    data = Serial.read();
-//    if(data == '1'){
-//      digitalWrite(53, HIGH);
-//      delay(1000);
-//      digitalWrite(53, LOW);
-//      delay(1000);
-//    }
-//  }
+  
     
 }

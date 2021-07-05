@@ -1,57 +1,44 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:sensors/sensors.dart';
 
-class ChatPage extends StatefulWidget {
+class AceleroPage extends StatefulWidget {
   final BluetoothDevice server;
 
-  const ChatPage(
+  const AceleroPage(
       {this.server}); //recebo o end do dispositivo selecionado para conexão bluetooth
 
   @override
-  _ChatPage createState() => new _ChatPage();
+  _AceleroPage createState() => new _AceleroPage();
 }
 
-class _Message {
-  int whom;
-  String text;
-
-  _Message(this.whom, this.text);
-}
-
-class _ChatPage extends State<ChatPage> {
-  static final clientID = 0;
+class _AceleroPage extends State<AceleroPage> {
   BluetoothConnection connection;
-
-  List<_Message> messages = [];
-  String _messageBuffer = '';
-
-  final TextEditingController textEditingController =
-      new TextEditingController();
-  final ScrollController listScrollController = new ScrollController();
 
   bool isConnecting = true;
   bool get isConnected => connection != null && connection.isConnected;
 
   bool isDisconnecting = false;
 
-  //Variaveis que eu inseri :)
+  //Variáveis de retorno (mensagem) e captura da aceleração nos três eixos - x, y, z
   String _mensagem = "";
   String _aceleracaoX = "";
-  String _aceleracaoY = "";
-  String _aceleracaoZ = "";
   //Fim da declaração
 
-  String _aceleX = "";
-  String _aceleY = "";
-  String _aceleZ = "";
+  //Variáveis para utilizar nos calculos de distância e velocidade
+  int _tempoInicial; //time between capture of datas
+  double _distancia = 0; //distancia deslocada
+  // Armazena o ultimo valor de aceleração e velocidade dentro da própria
+  // função declarando a variável como static (no 1º momento ela será 0)
+  double _aceleracaoAnterior = 0.0;
+  double _velocidadeAnterior = 0.0;
 
-  String _giroX = "";
-  String _giroY = "";
-  String _giroZ = "";
+  int _contador = 0;
+  double _valor = 0.0;
 
   @override
   void initState() {
@@ -111,36 +98,6 @@ class _ChatPage extends State<ChatPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Container(
-            //   alignment: Alignment.center,
-            //   padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
-            //   //child: Text("Ligar/desligar LED"),
-            //   child: Text("Movimentar Avatar"),
-            // ),
-            // Container(
-            //   alignment: Alignment.center,
-            //   padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-            //   child: ElevatedButton(
-            //     onPressed: () async {
-            //       // connection.output.add(utf8.encode("H"));
-            //       _sendMessage("H");
-            //     },
-            //    // child: Text("Ligar"),
-            //    child: Icon(Icons.arrow_forward_ios),
-            //   ),
-            // ),
-            // Container(
-            //   alignment: Alignment.center,
-            //   padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-            //   child: ElevatedButton(
-            //     onPressed: () async {
-            //       // connection.output.add(utf8.encode("L"));
-            //       _sendMessage("L");
-            //     },
-            //     //child: Text("Desligar"),
-            //     child: Icon(Icons.arrow_back_ios),
-            //   ),
-            // ),
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
@@ -152,6 +109,10 @@ class _ChatPage extends State<ChatPage> {
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
               child: ElevatedButton(
                 onPressed: () async {
+                  _aceleracaoAnterior = 0.0;
+                  _velocidadeAnterior = 0.0;
+                  _tempoInicial = DateTime.now().second;
+                  print("Tempo capturado inicialmente: $_tempoInicial");
                   // connection.output.add(utf8.encode("H"));
                   leituraSensores();
                   // leituraSensores();
@@ -164,38 +125,33 @@ class _ChatPage extends State<ChatPage> {
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
               child: Text(_mensagem == ""
-                  ? "Aguardando retorno"
-                  : "Retorno: $_mensagem"),
+                  ? "Aguardando retorno do Arduino"
+                  : "Retorno Arduino: $_mensagem"),
             ),
             Container(
-              //PAREI AQUI A PROGRAMAÇÃO DIA 5/ABRIL - TROCAR POR AX, AY, AZ E ENVIAR PARA MODULO
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-              child: Text(_aceleracaoX == "" &&
-                      _aceleracaoY == "" &&
-                      _aceleracaoX == ""
-                  ? "Aguardando coleta de dados do acelerômetro"
-                  : "[x, y, z] = [$_aceleracaoX, $_aceleracaoY, $_aceleracaoZ]"),
+              // child: Text(_aceleracaoX == "" &&
+              //         _aceleracaoY == "" &&
+              //         _aceleracaoX == ""
+              //     ? "Aguardando coleta de dados do acelerômetro"
+              //     : "[x, y, z] = [$_aceleracaoX, $_aceleracaoY, $_aceleracaoZ]"),
+              child: Text(_aceleracaoX == ""
+                  ? "AGUARDANDO CAPTURA DA ACELERAÇÃO"
+                  : "x = [$_aceleracaoX]"),
             ),
-            // Container(
-            //   //PAREI AQUI A PROGRAMAÇÃO DIA 5/ABRIL - TROCAR POR AX, AY, AZ E ENVIAR PARA MODULO
-            //   alignment: Alignment.center,
-            //   padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-            //   child: Text(_aceleracaoX == "" &&
-            //           _aceleracaoY == "" &&
-            //           _aceleracaoX == ""
-            //       ? "Aguardando coleta de dados do acelerômetro sem efeitos da gravidade"
-            //       : "[x, y, z] = [$_aceleX, $_aceleY, $_aceleZ]"),
-            // ),
-            // Container(
-            //   //PAREI AQUI A PROGRAMAÇÃO DIA 5/ABRIL - TROCAR POR AX, AY, AZ E ENVIAR PARA MODULO
-            //   alignment: Alignment.center,
-            //   padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-            //   child: Text(
-            //       _aceleracaoX == "" && _aceleracaoY == "" && _aceleracaoX == ""
-            //           ? "Aguardando coleta de dados do giroscópio"
-            //           : "[x, y, z] = [$_giroX, $_giroY, $_giroZ]"),
-            // ),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+              // child: Text(_aceleracaoX == "" &&
+              //         _aceleracaoY == "" &&
+              //         _aceleracaoX == ""
+              //     ? "Aguardando coleta de dados do acelerômetro"
+              //     : "[x, y, z] = [$_aceleracaoX, $_aceleracaoY, $_aceleracaoZ]"),
+              child: Text(_distancia == 0.0
+                  ? "AGUARDANDO CAPTURA DA DISTÂNCIA"
+                  : "x = [$_distancia]"),
+            ),
           ],
         ),
       ),
@@ -211,20 +167,11 @@ class _ChatPage extends State<ChatPage> {
       _mensagem = "Ok!";
     });
     print(entrada);
-    // if (entrada == "1") {
-    //   setState(() {
-    //     _mensagem = "Direita";
-    //   });
-    // } else {
-    //   setState(() {
-    //     _mensagem = "Esquerda";
-    //   });
-    // }
   }
 
   //envia dados via bluetooth
   void _sendMessage(String saida) async {
-    print("Enviando uma mensagem ao módulo!");
+    // print("Enviando uma mensagem ao módulo!");
     saida = saida.trim();
     connection.output
         .add(utf8.encode(saida + "\r\n")); //emite saida para o modulo
@@ -233,76 +180,65 @@ class _ChatPage extends State<ChatPage> {
   //Captura dados do sensor acelerömetro desprezando a gravidade
   //Ou seja, apenas a aceleração do usuário sobre o smartphone
   void leituraSensores() async {
-    var leituraAnterior = new DateTime.now();
-    var ax = 0.0, ay = 0.0, az = 0.0;
-    var a2x = 0.0, a2y = 0.0, a2z = 0.0;
-    var gx = 0.0, gy = 0.0, gz = 0.0;
-    //Leitura dos sensores
+    double ax = 0.0;
 
+    //Leitura dos sensores
     //aceleração com os efeitos da gravidade - m/s²
     accelerometerEvents.listen((AccelerometerEvent event) {
-      //quais eixos vou utilizar?
       // print(event);
       ax = event.x;
-      ay = event.y;
-      az = event.z;
+      setState(() {
+        _aceleracaoX = ax.toStringAsFixed(3) + ";"; //com ; p/ enviar p/ arduino
+        _sendMessage(_aceleracaoX);
+      });
     });
 
     //aceleração sem gravidade - ação do usuário no smartphone - m/s²
     userAccelerometerEvents.listen((UserAccelerometerEvent event) {
-      // print(event);
-      a2x = event.x;
-      a2y = event.y;
-      a2z = event.z;
+      // print("ACELERAÇÃO SEM GRAVIDADE!");
       // ax = event.x;
-      // ay = event.y;
-      // az = event.z;
     });
 
     //rotação do dispositivo - rad/s
     gyroscopeEvents.listen((GyroscopeEvent event) {
-      //recebe os dados em rad/s
-      // print(event);
-      gx = event.x;
-      gy = event.y;
-      gz = event.z;
+      // print("DADOS DO GIROSCÓPIO"); //em rad/s
     });
 
-    Timer.periodic(Duration(seconds: 1), (Timer t) {
-      // print("Executando Timer...");
+    double calculoTrapezio(double aceleracao, int tempoAgora) {
+      double velocidade = 0.0;
+      double distanciaCalculada = 0.0;
 
-      // print("Acelerômetro:");
-      // print("Em x:" + ax.toStringAsFixed(3));
-      // print("Em y:" + ay.toStringAsFixed(3));
-      // print("Em z:" + az.toStringAsFixed(3));
-      // print("------");
+      print("Variáveis para o cálculo da Regra do Trapézio:");
+      print("Velocidade anterior = $_velocidadeAnterior");
+      print("Aceleração anterior = $_aceleracaoAnterior");
+      print("Tempo = $tempoAgora");
+      print("Aceleração = $aceleracao");
 
-      // print("Giroscópio:");
-      // print("Em x:" + gx.toStringAsFixed(3));
-      // print("Em y:" + gy.toStringAsFixed(3));
-      // print("Em z:" + gz.toStringAsFixed(3));
-      // print("------");
+      velocidade = _velocidadeAnterior +
+          (_aceleracaoAnterior + aceleracao) * tempoAgora / 2.0;
 
-      // setState(() {
-      //   _aceleracaoX = ax.toStringAsFixed(3);
-      //   _aceleracaoY = ay.toStringAsFixed(3);
-      //   _aceleracaoZ = az.toStringAsFixed(3);
-      //   _sendMessage(_aceleracaoX);
-      // });
+      distanciaCalculada =
+          _distancia + (_velocidadeAnterior + velocidade) * tempoAgora / 2.0;
+
+      _distancia = distanciaCalculada;
+      _aceleracaoAnterior = aceleracao;
+      _velocidadeAnterior = velocidade;
+
+      print("Velocidade calculada: $velocidade");
+      print("Distância calculada: $distanciaCalculada");
+
+      return distanciaCalculada;
+    }
+
+    //timer para coletar os dados de aceleração a cada 50ms
+    Timer.periodic(Duration(milliseconds: 30), (Timer t) {
       setState(() {
-        _aceleracaoX = ax.toStringAsFixed(3) + ";";
-        _aceleracaoY = ay.toStringAsFixed(3) + ";";
-        _aceleracaoZ = az.toStringAsFixed(3) + ";";
+        _aceleracaoX = ax.toStringAsFixed(3) + ";"; //com ; p/ enviar p/ arduino
         _sendMessage(_aceleracaoX);
+        //       // int tempoAgora = DateTime.now().second - _tempoInicial;
+        //       // // double distancia = calculoTrapezio(aceleracao, tempoAgora);
+        //       // _tempoInicial = DateTime.now().second;
       });
-      var dDay = DateTime.now();
-
-      int difference = dDay.difference(leituraAnterior).inSeconds;
-
-      if (difference > 10) {
-        // print("Atualizar leitura de tempo...");
-        leituraAnterior = new DateTime.now();
-      }
     });
   }
 }

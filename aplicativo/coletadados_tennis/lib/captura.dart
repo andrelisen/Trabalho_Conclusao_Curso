@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -172,9 +171,11 @@ class _AceleroPage extends State<AceleroPage> {
   //envia dados via bluetooth
   void _sendMessage(String saida) async {
     // print("Enviando uma mensagem ao módulo!");
+    print(saida);
     saida = saida.trim();
-    connection.output
-        .add(utf8.encode(saida + "\r\n")); //emite saida para o modulo
+    // connection.output
+    //     .add(utf8.encode(saida + "\r\n")); //emite saida para o modulo
+    connection.output.add(utf8.encode(saida + "\r\n"));
   }
 
   //Captura dados do sensor acelerömetro desprezando a gravidade
@@ -189,7 +190,7 @@ class _AceleroPage extends State<AceleroPage> {
       ax = event.x;
       setState(() {
         _aceleracaoX = ax.toStringAsFixed(3) + ";"; //com ; p/ enviar p/ arduino
-        _sendMessage(_aceleracaoX);
+        _sendMessage('0.205');
       });
     });
 

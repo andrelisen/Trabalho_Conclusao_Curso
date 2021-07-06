@@ -15,7 +15,7 @@ public class movePlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        porta = new SerialPort("/dev/ttyACM0", 9600);
+        porta = new SerialPort("/dev/ttyACM0", 115200);
         porta.Open();
         porta.ReadTimeout = 5000; //delay para a porta
         //captura rigidbody do player
@@ -46,8 +46,9 @@ public class movePlayer : MonoBehaviour
                 float aceleracao = float.Parse(valorAceleracao);
                 // double aceleracao = System.Convert.ToDouble(valorAceleracao);
                 // Debug.Log(aceleracao);
+                print(aceleracao);
                 // transform.Translate(new Vector2(aceleracao, 0) * speed * Time.deltaTime);
-                transform.position = new Vector2(aceleracao * 0.08f * Time.deltaTime, 0);
+                transform.position = new Vector2(aceleracao * 1f * Time.deltaTime, 0);
 
                 // rigid.AddForce (new Vector2(aceleracao, 0) * 0.5f * Time.deltaTime);
                 

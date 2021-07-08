@@ -5,6 +5,7 @@
 //Tudo isso usando módulo HC-05
 //Posição lógica das entradas: branco, cinza [branco = TX2(RX), cinza = RX2(TX)]
 
+bool sData = true;
 
 void setup() {
   //Seta porta serial de comunicação
@@ -17,59 +18,15 @@ void setup() {
 }
 
 void loop() {
-if(Serial2.available()){
-  Serial.write(Serial2.read());
-}
-//  while (Serial2.available() >= 4) {
-//    switch (Serial2.read()) {
-//      case 's':
-//        Serial2.read(); // Ignore (probably) 't'
-//        switch (Serial2.read()) {
-//          case 'a': // "start"
-//            digitalWrite(53, HIGH);
-//            
-//            Serial2.read(); // Ignore 'r'
-//            while (Serial2.available() == 0);
-//            Serial2.read(); // Ignore 't'
-//            break;
-//            
-//          case 'o': // "stop"
-//            
-//            digitalWrite(53, LOW);
-//            
-//            Serial2.read(); // Ignore 'p'
-//        }
-//        break;
-//    }
-//  }
+  if(Serial2.available()){
+      Serial.write(Serial2.read());
+//      Serial.flush(); 
+      sData = false;
+  }
+  if(sData == true){
+    Serial.write("Stop\n"); //4 ou 5 caracteres
+  }
 
-//while (Serial2.available() >= 4) {
-//   Serial.write(Serial2.read());
-//    switch (Serial2.read()) {
-//      case '0':
-//        Serial2.read(); // Ignore (probably) 't'
-//        switch (Serial2.read()) {
-//          case '2': // "start"
-//            digitalWrite(53, HIGH);
-//            
-//            Serial2.read(); // Ignore 'r'
-//            while (Serial2.available() == 0);
-//            Serial2.read(); // Ignore 't'
-//            break;
-//            
-//          case 'o': // "stop"
-//            
-//            digitalWrite(53, LOW);
-//            
-//            Serial2.read(); // Ignore 'p'
-//           
-//        }
-//        
-//        break;
-//    }
-//    
-//  }
-  
   //comunicaçao smartphone - arduino - unity
 //  if(Serial2.available()){
 //    int isByte = Serial2.read();

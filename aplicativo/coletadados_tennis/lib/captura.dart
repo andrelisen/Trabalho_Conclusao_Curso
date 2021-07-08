@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:sensors/sensors.dart';
+// import 'package:sensors/sensors.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 class AceleroPage extends StatefulWidget {
   final BluetoothDevice server;
@@ -25,19 +27,14 @@ class _AceleroPage extends State<AceleroPage> {
 
   //Variáveis de retorno (mensagem) e captura da aceleração nos três eixos - x, y, z
   String _mensagem = "";
-  String _aceleracaoX = "";
+  String _dadosMovimento = "";
   //Fim da declaração
 
-  //Variáveis para utilizar nos calculos de distância e velocidade
-  int _tempoInicial; //time between capture of datas
-  double _distancia = 0; //distancia deslocada
-  // Armazena o ultimo valor de aceleração e velocidade dentro da própria
-  // função declarando a variável como static (no 1º momento ela será 0)
-  double _aceleracaoAnterior = 0.0;
-  double _velocidadeAnterior = 0.0;
-
-  int _contador = 0;
-  double _valor = 0.0;
+  double _calibragemParado;
+  int _numCalib = 0;
+  double _velocidade;
+  String _aceleracao;
+  String _giro;
 
   @override
   void initState() {
@@ -99,57 +96,28 @@ class _AceleroPage extends State<AceleroPage> {
           children: [
             Container(
               alignment: Alignment.center,
-              padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
-              //child: Text("Ligar/desligar LED"),
-              child: Text("CAPTURA DE DADOS DE MOVIMENTAÇÃO"),
-            ),
-            Container(
-              alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
               child: ElevatedButton(
                 onPressed: () async {
-                  _aceleracaoAnterior = 0.0;
-                  _velocidadeAnterior = 0.0;
-                  _tempoInicial = DateTime.now().second;
-                  print("Tempo capturado inicialmente: $_tempoInicial");
-                  // connection.output.add(utf8.encode("H"));
+                  // _tempoInicial = DateTime.now().second;
                   leituraSensores();
                   // leituraSensores();
                 },
                 // child: Text("Ligar"),
-                child: Text("CAPTURAR"),
+                child: Text("Realizar captura"),
               ),
             ),
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-              child: Text(_mensagem == ""
-                  ? "Aguardando retorno do Arduino"
-                  : "Retorno Arduino: $_mensagem"),
-            ),
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-              // child: Text(_aceleracaoX == "" &&
+              // child: Text(_dadosMovimento == "" &&
               //         _aceleracaoY == "" &&
-              //         _aceleracaoX == ""
+              //         _dadosMovimento == ""
               //     ? "Aguardando coleta de dados do acelerômetro"
-              //     : "[x, y, z] = [$_aceleracaoX, $_aceleracaoY, $_aceleracaoZ]"),
-              child: Text(_aceleracaoX == ""
+              //     : "[x, y, z] = [$_dadosMovimento, $_aceleracaoY, $_aceleracaoZ]"),
+              child: Text(_aceleracao == ""
                   ? "AGUARDANDO CAPTURA DA ACELERAÇÃO"
-                  : "x = [$_aceleracaoX]"),
-            ),
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-              // child: Text(_aceleracaoX == "" &&
-              //         _aceleracaoY == "" &&
-              //         _aceleracaoX == ""
-              //     ? "Aguardando coleta de dados do acelerômetro"
-              //     : "[x, y, z] = [$_aceleracaoX, $_aceleracaoY, $_aceleracaoZ]"),
-              child: Text(_distancia == 0.0
-                  ? "AGUARDANDO CAPTURA DA DISTÂNCIA"
-                  : "x = [$_distancia]"),
+                  : "Aceleração = [$_aceleracao]"),
             ),
           ],
         ),
@@ -171,75 +139,78 @@ class _AceleroPage extends State<AceleroPage> {
   //envia dados via bluetooth
   void _sendMessage(String saida) async {
     // print("Enviando uma mensagem ao módulo!");
-    print(saida);
     saida = saida.trim();
-    // connection.output
-    //     .add(utf8.encode(saida + "\r\n")); //emite saida para o modulo
     connection.output.add(utf8.encode(saida + "\r\n"));
   }
 
   //Captura dados do sensor acelerömetro desprezando a gravidade
   //Ou seja, apenas a aceleração do usuário sobre o smartphone
   void leituraSensores() async {
-    double ax = 0.0;
-
+    double somAcel = 0.0;
+    var leituraAceleracao;
+    double velocidadeAtual;
+    int tempoAtual;
     //Leitura dos sensores
     //aceleração com os efeitos da gravidade - m/s²
+
+    //aceleração com gravidade - ação do usuário no smartphone - m/s²
     accelerometerEvents.listen((AccelerometerEvent event) {
-      // print(event);
-      ax = event.x;
+      // velocidadeAtual = sqrt(event.x * event.x + event.y * event.y);
+      // tempoAtual = DateTime.now().second;
+
+      // double distancia = velocidadeAtual * tempoAtual;
+
+      // var distanciaShift = distancia.toStringAsFixed(2);
+
       setState(() {
-        _aceleracaoX = ax.toStringAsFixed(3) + ";"; //com ; p/ enviar p/ arduino
-        _sendMessage('0.205');
+        _aceleracao =
+            (event.x).toStringAsFixed(2) + ";"; //6 positivo - 7 negativo
+        // leituraAceleracao.cancel();
+        print(event.x);
+        _sendMessage(_aceleracao);
       });
     });
 
-    //aceleração sem gravidade - ação do usuário no smartphone - m/s²
-    userAccelerometerEvents.listen((UserAccelerometerEvent event) {
-      // print("ACELERAÇÃO SEM GRAVIDADE!");
-      // ax = event.x;
-    });
+    // double girando;
 
-    //rotação do dispositivo - rad/s
-    gyroscopeEvents.listen((GyroscopeEvent event) {
-      // print("DADOS DO GIROSCÓPIO"); //em rad/s
-    });
+    // gyroscopeEvents.listen((GyroscopeEvent event) {
+    //   setState(() {
+    //     girando = sqrt(event.x * event.x + event.y * event.y);
+    //     print(event);
+    //     _giro = (girando).toStringAsFixed(2) + ";"; //6 positivo - 7 negativo
+    //     //enviar orientação,velocidade
+    //     // leituraAceleracao.cancel();
+    //     _sendMessage(_giro);
+    //   });
+    // });
+  }
 
-    double calculoTrapezio(double aceleracao, int tempoAgora) {
-      double velocidade = 0.0;
-      double distanciaCalculada = 0.0;
+  //Função responsável pela calibragem do sensor
+  void calibragemSensores(int condicao) async {
+    double somAcel = 0.0;
 
-      print("Variáveis para o cálculo da Regra do Trapézio:");
-      print("Velocidade anterior = $_velocidadeAnterior");
-      print("Aceleração anterior = $_aceleracaoAnterior");
-      print("Tempo = $tempoAgora");
-      print("Aceleração = $aceleracao");
+    var aceleracaoAtual;
+    var leituraAceleracao;
+    var velocidade;
 
-      velocidade = _velocidadeAnterior +
-          (_aceleracaoAnterior + aceleracao) * tempoAgora / 2.0;
-
-      distanciaCalculada =
-          _distancia + (_velocidadeAnterior + velocidade) * tempoAgora / 2.0;
-
-      _distancia = distanciaCalculada;
-      _aceleracaoAnterior = aceleracao;
-      _velocidadeAnterior = velocidade;
-
-      print("Velocidade calculada: $velocidade");
-      print("Distância calculada: $distanciaCalculada");
-
-      return distanciaCalculada;
+    print("Calibragem sensores");
+    if (condicao == 1) {
+      //aceleração sem a gravidade
+      leituraAceleracao =
+          userAccelerometerEvents.listen((UserAccelerometerEvent event) {
+        somAcel += event.x;
+        _velocidade =
+            sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+        _numCalib++;
+        if (_numCalib == 60) {
+          leituraAceleracao.cancel();
+          _calibragemParado = somAcel / _numCalib;
+          aceleracaoAtual = _calibragemParado.toStringAsFixed(2);
+          velocidade = _velocidade.toStringAsFixed(2);
+          print("Calibragem parado é = $aceleracaoAtual");
+          print("Velocidade parado é = $velocidade");
+        }
+      });
     }
-
-    //timer para coletar os dados de aceleração a cada 50ms
-    Timer.periodic(Duration(milliseconds: 30), (Timer t) {
-      setState(() {
-        _aceleracaoX = ax.toStringAsFixed(3) + ";"; //com ; p/ enviar p/ arduino
-        _sendMessage(_aceleracaoX);
-        //       // int tempoAgora = DateTime.now().second - _tempoInicial;
-        //       // // double distancia = calculoTrapezio(aceleracao, tempoAgora);
-        //       // _tempoInicial = DateTime.now().second;
-      });
-    });
   }
 }

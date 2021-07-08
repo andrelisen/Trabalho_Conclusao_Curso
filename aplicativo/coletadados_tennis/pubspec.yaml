@@ -15,8 +15,9 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   
-  sensors: ^2.0.0 #library capture of sensors .
+  # sensors: ^2.0.0 #library capture of sensors .
   flutter_bluetooth_serial: ^0.2.2 #library use bluetooth in application.
+  sensors_plus: ^1.0.2
 
 dev_dependencies:
   flutter_test:

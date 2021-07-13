@@ -7,8 +7,9 @@ using System.Threading;
 public class Player : MonoBehaviour
 {
     public Transform aimTarget; //alvo para onde a bolinha será lançada para o lado do bot
-    float speed = 7.5f; //velocidade da raquete que será multiplicada pela posição
-    float force = 15;
+    float speed = 6.5f; //velocidade da raquete que será multiplicada pela posição
+    // float force = 15;
+    float force = 5;
     bool hitting;
 
     public Transform ball;
@@ -17,6 +18,11 @@ public class Player : MonoBehaviour
 
     //Comunicação serial
     SerialPort porta;
+
+    [SerializeField] Transform serveRight;
+    [SerializeField] Transform serveLeft;
+
+    bool servedRight = true;
 
     void Start()
     {
@@ -137,7 +143,23 @@ public class Player : MonoBehaviour
 
             Vector3 ballDir = ball.position - transform.position;
             aimTarget.position = aimTargetPosition;
+
+            ball.GetComponent<Ball>().hitter = "player";
+
         }
     }
+
+
+    //seta posição quando erra jogada
+    // public void Reset(){
+    //     if(servedRight){
+    //         transform.position = serveLeft.position;
+    //     }else{
+    //         transform.position = serveRight.position;
+    //     }
+
+    //     servedRight = !servedRight;
+
+    // }
 
 }

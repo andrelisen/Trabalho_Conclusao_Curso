@@ -10,7 +10,8 @@ public class Bot : MonoBehaviour
     public Transform aimTarget;
 
     Vector3 targetPosition;
-    float force = 15;
+    // float force = 15;
+    float force = 5;
     
     public Transform[] targets;
 
@@ -26,6 +27,7 @@ public class Bot : MonoBehaviour
         Move();
     }
 
+    //mover em direção a alvo aleatório
     void Move(){
         targetPosition.z = ball.position.z;
         //movimenta bot entre posição atual e targetPosition(no caso é a pos da ball) com a velocidade especificada
@@ -38,13 +40,14 @@ public class Bot : MonoBehaviour
         return targets[randomValue].position;
     }
 
-    private void OnTriggerEnter(Collider other) {
+    private void OnTriggerEnter(Collider other){
         //verifica se a colisão foi com a bola
         if(other.CompareTag("Ball")){
             Vector3 dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
             other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0);
             Vector3 ballDir = ball.position - transform.position;
-            
+            ball.GetComponent<Ball>().hitter = "bot";
         }
     }
+    
 }

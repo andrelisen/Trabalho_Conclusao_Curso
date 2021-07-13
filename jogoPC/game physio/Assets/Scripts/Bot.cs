@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bot : MonoBehaviour
 {
-    float speed = 35;
+    float speed = 50;
     // Animator animator;
     public Transform ball;
     public Transform aimTarget;
@@ -43,7 +43,6 @@ public class Bot : MonoBehaviour
         if(other.CompareTag("Ball")){
             Vector3 dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
             other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0);
-
             Vector3 ballDir = ball.position - transform.position;
             
         }

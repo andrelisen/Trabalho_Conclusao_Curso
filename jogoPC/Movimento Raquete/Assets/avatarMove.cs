@@ -23,10 +23,17 @@ public class avatarMove : MonoBehaviour
     {   
         if(porta.IsOpen){
             try{
+                //Debug.Log(porta.ReadByte()); //esse funciona
+                //Debug.Log(porta.ReadChar()); //esse funciona também mas vem como byte
+                //Debug.Log(porta.ReadLine()); //esse funciona e captura toda a linha corretamente \o/
                 //leitura da entrada
                 string leitura = porta.ReadLine();
                 //calcula e verifica quantidade de caracteres
                 int tamanhoLeitura = leitura.Length;
+                //captura tempo atual
+                DateTime now = DateTime.Now;
+                //utiliza o tempo em segundos p/ calcular v=a.t
+                int tempo = now.Second;
                 
                 if(tamanhoLeitura == 4){
                     Debug.Log("Vazio");
@@ -35,14 +42,30 @@ public class avatarMove : MonoBehaviour
                 }else if(tamanhoLeitura == 6 ){
                     // Debug.Log("Positivo");
                     // Debug.Log(leitura);
-
-                    moveAvatar(1, 2.5f);
+                    //separa aceleração
+                    string[] leituraSep = leitura.Split(';');
+                    // Debug.Log(leituraSep[0]);
+                    string aceleracaoSep = leituraSep[0];
+                    float aceleracao = float.Parse(aceleracaoSep);
+                    float velocidade = aceleracao * tempo;
+                    Debug.Log(velocidade);
+                    // moveAvatar(1, 2.5f);
+                    moveAvatar(1, velocidade);
                     moverDir++;
                     moverEsq = 0;
                 }else if(tamanhoLeitura == 7 ){
                     // Debug.Log("Negativo");
                     // Debug.Log(leitura);
-                    moveAvatar(0, 2.5f);
+                    //separa aceleração
+                    string[] leituraSep = leitura.Split(';');
+                    // Debug.Log(leituraSep[0]);
+                    string aceleracaoSep = leituraSep[0];
+                    float aceleracao = float.Parse(aceleracaoSep);
+                    int arredondar = -1;
+                    float velocidade = arredondar * aceleracao * tempo;
+                    Debug.Log(velocidade);
+                    // moveAvatar(0, 2.5f);
+                    moveAvatar(0, velocidade);
                     moverEsq++;
                     moverDir = 0;
                 }
@@ -51,35 +74,6 @@ public class avatarMove : MonoBehaviour
                 throw;
             }
         }
-        // if(porta.IsOpen){
-        //     try{
-        //         //Debug.Log(porta.ReadByte()); //esse funciona
-        //         //Debug.Log(porta.ReadChar()); //esse funciona também mas vem como byte
-        //         //Debug.Log(porta.ReadLine()); //esse funciona e captura toda a linha corretamente \o/
-                
-        //         //lendo os valores recebidos via comun serial
-        //         string leitura = porta.ReadLine();
-        //         if(leitura == "2"){
-        //             Debug.Log("Sem dados do smartphone no momento");
-        //         }else{
-        //             Debug.Log(leitura);
-        //             //realiza a separação dos valores
-        //             // string[] separacao = leitura.Split(';');
-        //             //recebe a direção do avatar e a velocidade
-        //             // string direcaoStr = separacao[0];
-        //             // string velocidadeStr = separacao[2];
-        //             // Debug.Log(direcaoStr);
-        //             // Debug.Log(velocidadeStr);
-        //             //converte a string da direcao em inteiro e a velocidade em double 
-        //             // int direcao = int.Parse(direcaoStr);
-        //             // float velocidade = float.Parse(velocidadeStr);
-        //             // moveAvatar(direcao, velocidade);
-        //         }
-                
-        //     }catch(System.Exception){
-        //        Debug.Log("Erro");
-        //     }
-        // }
     }
 
     void moveAvatar(int direcao, float velocidade){

@@ -153,7 +153,7 @@ class _AceleroPage extends State<AceleroPage> {
     //Leitura dos sensores
     //aceleração com os efeitos da gravidade - m/s²
 
-    //aceleração com gravidade - ação do usuário no smartphone - m/s²
+    //aceleração com gravidade - m/s²
     accelerometerEvents.listen((AccelerometerEvent event) {
       // velocidadeAtual = sqrt(event.x * event.x + event.y * event.y);
       // tempoAtual = DateTime.now().second;

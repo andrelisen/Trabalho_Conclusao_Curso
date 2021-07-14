@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Ball : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class Ball : MonoBehaviour
 
     int playerScore;
     int botScore;
+
+    [SerializeField] Text playerScoreText;
+    [SerializeField] Text botScoreText;
+
+    public bool playing = true;
 
     void Start()
     {
@@ -31,23 +37,50 @@ public class Ball : MonoBehaviour
             transform.position = initialPos;
 
             // GameObject.Find("player").GetComponent<Player>().Reset();
-
-            if(hitter == "player"){
-                playerScore++;
-            }else if(hitter == "bot"){
-                botScore++;
+            if(playing){
+                if(hitter == "player"){
+                    playerScore++;
+                }else if(hitter == "bot"){
+                    botScore++;
+                }
+                playing = false;
+                UpdateScores();
             }
+            
+        }else if(collision.transform.CompareTag("Net")){
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+            // GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            transform.position = initialPos;
+
+            // GameObject.Find("player").GetComponent<Player>().Reset();
+            if(playing){
+                if(hitter == "player"){
+                    botScore++;
+                }else if(hitter == "bot"){
+                    playerScore++;
+                }
+                playing = false;
+                UpdateScores();
+            }
+            
         }
     }
 
     private void OnTriggerEnter(Collider other){
-        if(other.CompareTag("Out")){
+        if(other.CompareTag("Out") && playing){
             if(hitter == "player"){
                 botScore++;
             }else if(hitter == "bot"){
                 playerScore++;
             }
+            playing = false;
+            UpdateScores();
         }
+    }
+
+    void UpdateScores(){
+        playerScoreText.text = playerScore.ToString();
+        botScoreText.text = botScore.ToString();
     }
 
 }

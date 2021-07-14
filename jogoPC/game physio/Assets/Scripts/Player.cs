@@ -7,14 +7,17 @@ using System.Threading;
 public class Player : MonoBehaviour
 {
     public Transform aimTarget; //alvo para onde a bolinha será lançada para o lado do bot
-    float speed = 6.5f; //velocidade da raquete que será multiplicada pela posição
-    // float force = 15;
-    float force = 5;
+    float speed = 15f; //velocidade da raquete que será multiplicada pela posição
+    float force = 15; //15
     bool hitting;
 
     public Transform ball;
     
     Vector3 aimTargetPosition;
+
+
+    //posição aleatoria de rebate da bolinha 
+    public Transform[] targets;
 
     //Comunicação serial
     SerialPort porta;
@@ -28,20 +31,33 @@ public class Player : MonoBehaviour
     {
         aimTargetPosition = aimTarget.position;
 
-        porta = new SerialPort("/dev/ttyACM0", 115200);
+       /* porta = new SerialPort("/dev/ttyACM0", 115200);
         porta.Open();
         porta.ReadTimeout = -1; //InfiniteTimeout = -1
-        porta.DiscardInBuffer();
+        porta.DiscardInBuffer();*/
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        if(porta.IsOpen){
-            try{
-                int h = 0;
-                int v = 0;
+       /* if(porta.IsOpen){
+            try{*/
+                //emite flag para arduino saber que a porta serial ta aberta
+                //arduino verifica se tem dados sendo recebidos via bluetooth
+                //se sim, encaminha
+                    //limpa o buffer de entrada anterior
+                    //começa a receber os novos dados 
+                    //realiza movimento do avatar
+                //se não, envia mensagem de aguardo/vazio
+                    //limpa o buffer sempre até arduino emitir aviso de envio de dados
+                    //emite mensagem de aguarde para mover seu avatar - na tela do jogo
+
+                //captura eixos de movimentação
+                float h = Input.GetAxisRaw("Horizontal"); //no meu caso movimenta apenas na horizontal pois paciente tem pouca mobilidade
+                float v = Input.GetAxisRaw("Vertical");
+                //int h = 0;
+                //int v = 0;
                 //lógica de movimento do alvo do lado do bot  
                 if(Input.GetKeyDown(KeyCode.F)){
                     hitting = true; //movimentando alvo
@@ -54,25 +70,25 @@ public class Player : MonoBehaviour
                     aimTarget.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //modifica posição em x do alvo
                 }
 
-                // //verifica se houve modificação nos eixos do player
-                // if((h != 0 || v != 0) && !hitting){ //parte do diferente de hitting para não mover a raquete junto ao alvo
-                //     // transform.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //horizontal, para cima/baixo, vertical
-                //     transform.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //horizontal, para cima/baixo, vertical
-                // }
+                //verifica se houve modificação nos eixos do player
+                if((h != 0 || v != 0) && !hitting){ //parte do diferente de hitting para não mover a raquete junto ao alvo
+                     // transform.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //horizontal, para cima/baixo, vertical
+                     transform.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //horizontal, para cima/baixo, vertical
+                }
 
                 //Debug.Log(porta.ReadByte()); //esse funciona
                 //Debug.Log(porta.ReadChar()); //esse funciona também mas vem como byte
                 //Debug.Log(porta.ReadLine()); //esse funciona e captura toda a linha corretamente \o/
                 //leitura da entrada
-                string leitura = porta.ReadLine();
+               // string leitura = porta.ReadLine();
                 //calcula e verifica quantidade de caracteres
-                int tamanhoLeitura = leitura.Length;
+                //int tamanhoLeitura = leitura.Length;
                 //captura tempo atual
                 // DateTime now = DateTime.Now;
                 // //utiliza o tempo em segundos p/ calcular v=a.t
                 // int tempo = now.Second;
                 
-                if(tamanhoLeitura == 4){
+               /* if(tamanhoLeitura == 4){
                     Debug.Log("Vazio");
                     h=0;
                     v=0;
@@ -109,16 +125,13 @@ public class Player : MonoBehaviour
                     if((h != 0 || v != 0) && !hitting){ 
                         moveAvatar(0);
                     }
-                }
+                }*/
 
-            }catch(System.Exception){
+           /* }catch(System.Exception){
                 throw;
             }
-        }
+        }*/
 
-        //captura eixos de movimentação
-        // float h = Input.GetAxisRaw("Horizontal"); //no meu caso movimenta apenas na horizontal pois paciente tem pouca mobilidade
-        // float v = Input.GetAxisRaw("Vertical");
     }
 
     //função para mover player
@@ -134,18 +147,27 @@ public class Player : MonoBehaviour
         }
     }
 
+    //função para retornar aleatoriamente uma posição p/ rebate da bolinha pelo player - 3 opções por enquanto
+    Vector3 PickTarget(){
+        int randomValue =  Random.Range(0, targets.Length);
+        return targets[randomValue].position;
+    }
+
     //função para tratar colisões com a raquete -> bola + raquete 
     private void OnTriggerEnter(Collider other) {
         //verifica se a colisão foi com a bola
         if(other.CompareTag("Ball")){
-            Vector3 dir = aimTarget.position - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
+            //movimentando target usando teclado
+            // Vector3 dir = aimTarget.position - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
+            //movimentando target usando aleatoriedade
+            Vector3 dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
             other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0); //bolinha
 
             Vector3 ballDir = ball.position - transform.position;
             aimTarget.position = aimTargetPosition;
 
-            ball.GetComponent<Ball>().hitter = "player";
-
+            ball.GetComponent<Ball>().hitter = "player"; //modificando uma var. publica da class ball
+            ball.GetComponent<Ball>().playing = true;
         }
     }
 

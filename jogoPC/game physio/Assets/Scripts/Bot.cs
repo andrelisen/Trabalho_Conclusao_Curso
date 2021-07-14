@@ -10,8 +10,7 @@ public class Bot : MonoBehaviour
     public Transform aimTarget;
 
     Vector3 targetPosition;
-    // float force = 15;
-    float force = 5;
+    float force = 15;
     
     public Transform[] targets;
 
@@ -47,6 +46,7 @@ public class Bot : MonoBehaviour
             other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0);
             Vector3 ballDir = ball.position - transform.position;
             ball.GetComponent<Ball>().hitter = "bot";
+            ball.GetComponent<Ball>().playing = true;
         }
     }
     

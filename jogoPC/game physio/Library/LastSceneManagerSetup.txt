@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/sceneCalibragemMesa.unity
+- path: Assets/Scenes/sceneJogo.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

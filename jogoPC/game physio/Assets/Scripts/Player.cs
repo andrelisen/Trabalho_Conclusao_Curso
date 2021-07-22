@@ -35,6 +35,12 @@ public class Player : MonoBehaviour
 
     public static bool flagDificuldade;
 
+    public static int numAcertos;
+
+    public static float acelMedia;
+    public static int numLeitura;
+    public static float tempoDecorrido;
+
     void Start()
     {
         aimTargetPosition = aimTarget.position;
@@ -72,7 +78,11 @@ public class Player : MonoBehaviour
                         string leitura = comunicBluetooth.porta.ReadLine();
                         //calcula e verifica quantidade de caracteres
                         int tamanhoLeitura = leitura.Length;
-                        
+                        tempoDecorrido += Time.deltaTime;
+
+                        string[] separacao = leitura.Split(';');
+                        float aceleration = float.Parse(separacao[0]);
+
                         if(tamanhoLeitura == 4){
                             Debug.Log("Vazio");
                             comunicBluetooth.porta.DiscardInBuffer();
@@ -80,12 +90,16 @@ public class Player : MonoBehaviour
                             h=0;
                             v=0;
                         }else if(tamanhoLeitura == 6 ){
+                            acelMedia += aceleration;
+                            numLeitura++;
                             h=1;
                             v=1;
                             if((h != 0 || v != 0) && !hitting){ 
                                 moveAvatar(1);
                             }
                         }else if(tamanhoLeitura == 7 ){
+                            acelMedia += aceleration * (-1);
+                            numLeitura++;
                             h=-1;
                             v=-1;
                             if((h != 0 || v != 0) && !hitting){ 
@@ -102,12 +116,14 @@ public class Player : MonoBehaviour
     void moveAvatar(int direcao){
         if(direcao == 1){
             // transform.Translate(-Vector2.right * velocidade * Time.deltaTime, Space.World);
-            transform.Translate(-Vector2.right * speed * Time.deltaTime);
+            //transform.Translate(-Vector2.right * speed * Time.deltaTime);
+            transform.Translate(Vector2.right * speed * Time.deltaTime);
         }
 
         if(direcao == 0){
             // transform.Translate(Vector2.right * velocidade * Time.deltaTime, Space.World);
-            transform.Translate(Vector2.right * speed * Time.deltaTime);
+            //transform.Translate(Vector2.right * speed * Time.deltaTime);
+            transform.Translate(-Vector2.right * speed * Time.deltaTime);
         }
     }
 
@@ -121,6 +137,7 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         //verifica se a colisão foi com a bola
         if(other.CompareTag("Ball")){
+            numAcertos++;
             Vector3 dir;
             //movimentando target usando teclado
             if(flagDificuldade == false){

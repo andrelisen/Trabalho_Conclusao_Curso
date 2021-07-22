@@ -9,8 +9,10 @@ public class Ball : MonoBehaviour
     
     public string hitter;
 
-    int playerScore;
-    int botScore;
+    public static int playerScore;
+    public static int botScore;
+
+    public static int numErros;
 
     [SerializeField] Text playerScoreText;
     [SerializeField] Text botScoreText;
@@ -42,6 +44,7 @@ public class Ball : MonoBehaviour
                     playerScore++;
                 }else if(hitter == "bot"){
                     botScore++;
+                    numErros++;
                 }
                 playing = false;
                 UpdateScores();

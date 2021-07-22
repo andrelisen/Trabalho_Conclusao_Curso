@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/sceneJogo.unity
     guid: c504594d280de67339385f81af1e28cf
+  - enabled: 1
+    path: Assets/Scenes/sceneFinalPartida.unity
+    guid: 77c909c3d3804915ab0018c0bf6c7567
   m_configObjects: {}

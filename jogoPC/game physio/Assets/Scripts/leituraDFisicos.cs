@@ -11,7 +11,7 @@ public class leituraDFisicos : MonoBehaviour
     public GameObject batCard;
     public GameObject oxig;
     public GameObject obs;
-    
+
     public void CreateText(string pressaoArterial, string batimentosCard, string oxigenacao, string observacoes){
 
         //Path of the file
@@ -37,6 +37,6 @@ public class leituraDFisicos : MonoBehaviour
     }
 
     public void RenderizaCena(){
-        UnityEngine.SceneManagement.SceneManager.LoadScene("sceneSelectFase"); //carrega uma nova cena - coloca o nome da cena entre aspas
+            UnityEngine.SceneManagement.SceneManager.LoadScene("sceneSelectFase"); //carrega uma nova cena - coloca o nome da cena entre aspas
     }
 }

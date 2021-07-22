@@ -1,18 +1,6 @@
 Logs TennisGame Physio 
 
-Log date:17/07/2021 18:46:58
-Fisioterapeuta: Andrelise Paciente: Joao Nível Amputação: Superior Idade: 45 Sexo: M
-Log date:18/07/2021 10:30:47
-Fisioterapeuta: Daniel Paciente: Andrelise Nível Amputação: Superior Idade: 22 Sexo: F
-Log date:18/07/2021 10:31:30
-Pressão Arterial: 50 Batimentos Cardíacos: 11.7 Oxigenação: 97 Observações: Sem observaçoes
-Log date:18/07/2021 10:31:33
-Pressão Arterial: 50 Batimentos Cardíacos: 11.7 Oxigenação: 97 Observações: Sem observaçoes
-Log date:18/07/2021 10:31:35
-Pressão Arterial: 50 Batimentos Cardíacos: 11.7 Oxigenação: 97 Observações: Sem observaçoes
-Log date:18/07/2021 10:50:33
-Fisioterapeuta: bot Paciente: bot Nível Amputação: inferior Idade: 46 Sexo: M
-Log date:18/07/2021 10:50:52
-Pressão Arterial: 11.6 Batimentos Cardíacos: 49 Oxigenação: 97 Observações: sem informacoes
-Log date:18/07/2021 10:52:46
-Pressão Arterial: 9 Batimentos Cardíacos: 1 Oxigenação: 2 Observações: nada
+Log date:22/07/2021 10:52:35
+Fisioterapeuta: a Paciente: a Nível Amputação: a Idade: 12 Sexo: f
+Log date:22/07/2021 10:52:42
+Pressão Arterial: 1 Batimentos Cardíacos: 1 Oxigenação: 1 Observações: as

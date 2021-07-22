@@ -64,6 +64,7 @@
      <Compile Include="Assets\Scripts\atrasoPartida.cs" />
      <Compile Include="Assets\Scripts\comunicBluetooth.cs" />
      <Compile Include="Assets\Scripts\configModoJogo.cs" />
+     <Compile Include="Assets\Scripts\emiteConcBlue.cs" />
      <Compile Include="Assets\Scripts\leituraCadastro.cs" />
      <Compile Include="Assets\Scripts\leituraDFisicos.cs" />
      <Compile Include="Assets\Scripts\modoJogo.cs" />

@@ -36,7 +36,17 @@ class _MyHomePageState extends State<MyHomePage> {
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.fromLTRB(
-                0, 300, 0, 0), //left, top, right, bottom)
+                0, 25, 0, 0), //left, top, right, bottom)
+            child: SizedBox(
+              width: 500,
+              height: 250,
+              child: Image.asset('images/LogoTCC.png'),
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(
+                0, 75, 0, 0), //left, top, right, bottom)
             child: SizedBox(
               width: 150,
               height: 45,

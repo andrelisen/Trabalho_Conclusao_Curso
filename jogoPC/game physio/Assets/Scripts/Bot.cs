@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class Bot : MonoBehaviour
 {
-    float speed = 50;
     // Animator animator;
     public Transform ball;
     public Transform aimTarget;
 
     Vector3 targetPosition;
-    float force = 15;
+
+    //originais
+    //float speed = 9.5f; //25
+    //float force = 10f; //15
     
+    public static float speed;
+    public static float force; //15
+
     public Transform[] targets;
+
+    public static bool flagDificuldade;
 
     // Start is called before the first frame update
     void Start()
@@ -42,7 +49,12 @@ public class Bot : MonoBehaviour
     private void OnTriggerEnter(Collider other){
         //verifica se a colisão foi com a bola
         if(other.CompareTag("Ball")){
-            Vector3 dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
+            Vector3 dir;
+            if(flagDificuldade == false){
+                dir = aimTarget.position - transform.position;
+            }else{
+                dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
+             }
             other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0);
             Vector3 ballDir = ball.position - transform.position;
             ball.GetComponent<Ball>().hitter = "bot";

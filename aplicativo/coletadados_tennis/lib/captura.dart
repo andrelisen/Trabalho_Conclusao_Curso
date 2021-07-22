@@ -26,15 +26,12 @@ class _AceleroPage extends State<AceleroPage> {
   bool isDisconnecting = false;
 
   //Variáveis de retorno (mensagem) e captura da aceleração nos três eixos - x, y, z
-  String _mensagem = "";
-  String _dadosMovimento = "";
-  //Fim da declaração
+  int _flagColetaDados = 0;
 
   double _calibragemParado;
   int _numCalib = 0;
   double _velocidade;
   String _aceleracao;
-  String _giro;
 
   @override
   void initState() {
@@ -96,29 +93,53 @@ class _AceleroPage extends State<AceleroPage> {
           children: [
             Container(
               alignment: Alignment.center,
-              padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  // _tempoInicial = DateTime.now().second;
-                  leituraSensores();
-                  // leituraSensores();
-                },
-                // child: Text("Ligar"),
-                child: Text("Realizar captura"),
+              padding: const EdgeInsets.fromLTRB(0, 100, 0, 0), //l, t, r, b
+              child: Icon(
+                _flagColetaDados == 0 ? Icons.cached : Icons.swap_horiz_sharp,
+                color: Color(0xFF2E5889),
+                size: 280,
               ),
             ),
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-              // child: Text(_dadosMovimento == "" &&
-              //         _aceleracaoY == "" &&
-              //         _dadosMovimento == ""
-              //     ? "Aguardando coleta de dados do acelerômetro"
-              //     : "[x, y, z] = [$_dadosMovimento, $_aceleracaoY, $_aceleracaoZ]"),
-              child: Text(_aceleracao == ""
-                  ? "AGUARDANDO CAPTURA DA ACELERAÇÃO"
-                  : "Aceleração = [$_aceleracao]"),
+              child: Text(
+                _flagColetaDados == 0
+                    ? "AGUARDANDO INÍCIO DA PARTIDA"
+                    : "ENVIANDO DADOS VIA BLUETOOTH",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                  color: Color(0xFF2E5889),
+                ),
+              ),
             ),
+            // Container(
+            //   alignment: Alignment.center,
+            //   padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+            //   child: ElevatedButton(
+            //     onPressed: () async {
+            //       // _tempoInicial = DateTime.now().second;
+            //       leituraSensores();
+            //       // leituraSensores();
+            //     },
+            //     // child: Text("Ligar"),
+            //     child: Text("Realizar captura"),
+            //   ),
+            // ),
+            // Container(
+            //   alignment: Alignment.center,
+            //   padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+            //   // child: Text(_dadosMovimento == "" &&
+            //   //         _aceleracaoY == "" &&
+            //   //         _dadosMovimento == ""
+            //   //     ? "Aguardando coleta de dados do acelerômetro"
+            //   //     : "[x, y, z] = [$_dadosMovimento, $_aceleracaoY, $_aceleracaoZ]"),
+            //   child: Text(_aceleracao == ""
+            //       ? "AGUARDANDO CAPTURA DA ACELERAÇÃO"
+            //       : "Aceleração = [$_aceleracao]"),
+            // ),
           ],
         ),
       ),
@@ -129,11 +150,15 @@ class _AceleroPage extends State<AceleroPage> {
   void _onDataReceived(Uint8List data) {
     print("Recebendo uma mensagem do módulo!");
     String entrada = new String.fromCharCodes(data);
-    print(entrada);
+
+    //Converte string para inteiro
+    int entradaC = int.parse(entrada);
+
     setState(() {
-      _mensagem = "Ok!";
+      _flagColetaDados = entradaC;
+      //_sendMessage("1");
+      leituraSensores();
     });
-    print(entrada);
   }
 
   //envia dados via bluetooth
@@ -166,7 +191,7 @@ class _AceleroPage extends State<AceleroPage> {
         _aceleracao =
             (event.x).toStringAsFixed(2) + ";"; //6 positivo - 7 negativo
         // leituraAceleracao.cancel();
-        print(event.x);
+        // print(event.x);
         _sendMessage(_aceleracao);
       });
     });

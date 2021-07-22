@@ -6,6 +6,8 @@
 //Posição lógica das entradas: branco, cinza [branco = TX2(RX), cinza = RX2(TX)]
 
 bool sData = true;
+bool lagConnection = false;
+bool flagHand = false;
 
 void setup() {
   //Seta porta serial de comunicação
@@ -18,13 +20,23 @@ void setup() {
 }
 
 void loop() {
-  if(Serial2.available()){
+  if(Serial2.available() && flagHand == true){
       Serial.write(Serial2.read());
-//      Serial.flush(); 
       sData = false;
   }
   if(sData == true){
     Serial.write("Stop\n"); //4 ou 5 caracteres
+  }
+  if(Serial.available() && lagConnection == false){ 
+    if(Serial.read() == '1'){ //conexão com unity estabelecida
+      digitalWrite(53, HIGH); 
+      delay(10);
+      digitalWrite(53, LOW);
+      delay(10);
+      Serial2.write("1"); 
+      lagConnection = true;
+      flagHand = true;
+    }
   }
 
   //comunicaçao smartphone - arduino - unity

@@ -60,7 +60,7 @@ public class Ball : MonoBehaviour
                     playerScore++;
                 }
                 playing = false;
-                UpdateScores();
+                UpdateScores(); 
             }
             
         }
@@ -69,9 +69,9 @@ public class Ball : MonoBehaviour
     private void OnTriggerEnter(Collider other){
         if(other.CompareTag("Out") && playing){
             if(hitter == "player"){
-                botScore++;
-            }else if(hitter == "bot"){
                 playerScore++;
+            }else if(hitter == "bot"){
+                botScore++;
             }
             playing = false;
             UpdateScores();

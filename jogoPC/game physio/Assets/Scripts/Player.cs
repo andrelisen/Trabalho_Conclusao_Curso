@@ -7,8 +7,10 @@ using System.Threading;
 public class Player : MonoBehaviour
 {
     public Transform aimTarget; //alvo para onde a bolinha será lançada para o lado do bot
-    float speed = 15f; //velocidade da raquete que será multiplicada pela posição
+    
+    float speed = 6.0f; //velocidade da raquete que será multiplicada pela posição
     float force = 15; //15
+    
     bool hitting;
 
     public Transform ball;
@@ -19,119 +21,81 @@ public class Player : MonoBehaviour
     //posição aleatoria de rebate da bolinha 
     public Transform[] targets;
 
+
     //Comunicação serial
-    SerialPort porta;
+    // SerialPort porta;
 
     [SerializeField] Transform serveRight;
     [SerializeField] Transform serveLeft;
 
     bool servedRight = true;
 
+    bool flagConexao;
+    private float timer = 0.0f;
+
+    public static bool flagDificuldade;
+
     void Start()
     {
         aimTargetPosition = aimTarget.position;
-
-       /* porta = new SerialPort("/dev/ttyACM0", 115200);
-        porta.Open();
-        porta.ReadTimeout = -1; //InfiniteTimeout = -1
-        porta.DiscardInBuffer();*/
+        // porta = new SerialPort("/dev/ttyACM0", 115200);
+        // porta.Open();
+        // porta.ReadTimeout = -1; //InfiniteTimeout = -1
+        // porta.DiscardInBuffer();
+        comunicBluetooth.porta.DiscardInBuffer();
+        comunicBluetooth.porta.DiscardOutBuffer();
+        flagConexao = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(comunicBluetooth.porta.IsOpen){
+                try{
+                    //emite flag para arduino saber que a porta serial ta aberta
+                    //arduino verifica se tem dados sendo recebidos via bluetooth
+                    //se sim, encaminha
+                        //limpa o buffer de entrada anterior
+                        //começa a receber os novos dados 
+                        //realiza movimento do avatar
+                    //se não, envia mensagem de aguardo/vazio
+                        //limpa o buffer sempre até arduino emitir aviso de envio de dados
+                        //emite mensagem de aguarde para mover seu avatar - na tela do jogo
 
-       /* if(porta.IsOpen){
-            try{*/
-                //emite flag para arduino saber que a porta serial ta aberta
-                //arduino verifica se tem dados sendo recebidos via bluetooth
-                //se sim, encaminha
-                    //limpa o buffer de entrada anterior
-                    //começa a receber os novos dados 
-                    //realiza movimento do avatar
-                //se não, envia mensagem de aguardo/vazio
-                    //limpa o buffer sempre até arduino emitir aviso de envio de dados
-                    //emite mensagem de aguarde para mover seu avatar - na tela do jogo
-
-                //captura eixos de movimentação
-                float h = Input.GetAxisRaw("Horizontal"); //no meu caso movimenta apenas na horizontal pois paciente tem pouca mobilidade
-                float v = Input.GetAxisRaw("Vertical");
-                //int h = 0;
-                //int v = 0;
-                //lógica de movimento do alvo do lado do bot  
-                if(Input.GetKeyDown(KeyCode.F)){
-                    hitting = true; //movimentando alvo
-                }else if(Input.GetKeyUp(KeyCode.F)){
-                    hitting = false; //não movimentando alvo
+                        float h = 0;
+                        float v = 0;
+                        
+                        //Debug.Log(porta.ReadByte()); //esse funciona
+                        //Debug.Log(porta.ReadChar()); //esse funciona também mas vem como byte
+                        //Debug.Log(porta.ReadLine()); //esse funciona e captura toda a linha corretamente \o/
+                        //leitura da entrada
+                        string leitura = comunicBluetooth.porta.ReadLine();
+                        //calcula e verifica quantidade de caracteres
+                        int tamanhoLeitura = leitura.Length;
+                        
+                        if(tamanhoLeitura == 4){
+                            Debug.Log("Vazio");
+                            comunicBluetooth.porta.DiscardInBuffer();
+                            comunicBluetooth.porta.DiscardOutBuffer();
+                            h=0;
+                            v=0;
+                        }else if(tamanhoLeitura == 6 ){
+                            h=1;
+                            v=1;
+                            if((h != 0 || v != 0) && !hitting){ 
+                                moveAvatar(1);
+                            }
+                        }else if(tamanhoLeitura == 7 ){
+                            h=-1;
+                            v=-1;
+                            if((h != 0 || v != 0) && !hitting){ 
+                                moveAvatar(0);
+                            }
+                        }
+                }catch(System.Exception){
+                    throw;
                 }
-
-                //verifica se houve movimentação do alvo, se sim
-                if(hitting){
-                    aimTarget.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //modifica posição em x do alvo
-                }
-
-                //verifica se houve modificação nos eixos do player
-                if((h != 0 || v != 0) && !hitting){ //parte do diferente de hitting para não mover a raquete junto ao alvo
-                     // transform.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //horizontal, para cima/baixo, vertical
-                     transform.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //horizontal, para cima/baixo, vertical
-                }
-
-                //Debug.Log(porta.ReadByte()); //esse funciona
-                //Debug.Log(porta.ReadChar()); //esse funciona também mas vem como byte
-                //Debug.Log(porta.ReadLine()); //esse funciona e captura toda a linha corretamente \o/
-                //leitura da entrada
-               // string leitura = porta.ReadLine();
-                //calcula e verifica quantidade de caracteres
-                //int tamanhoLeitura = leitura.Length;
-                //captura tempo atual
-                // DateTime now = DateTime.Now;
-                // //utiliza o tempo em segundos p/ calcular v=a.t
-                // int tempo = now.Second;
-                
-               /* if(tamanhoLeitura == 4){
-                    Debug.Log("Vazio");
-                    h=0;
-                    v=0;
-                }else if(tamanhoLeitura == 6 ){
-                    // Debug.Log("Positivo");
-                    // Debug.Log(leitura);
-                    // //separa aceleração
-                    // string[] leituraSep = leitura.Split(';');
-                    // // Debug.Log(leituraSep[0]);
-                    // string aceleracaoSep = leituraSep[0];
-                    // float aceleracao = float.Parse(aceleracaoSep);
-                    // float velocidade = aceleracao * tempo;
-                    // // Debug.Log(velocidade);
-                    // moveAvatar(1, 2.5f);
-                    h=1;
-                    v=1;
-                    if((h != 0 || v != 0) && !hitting){ 
-                        moveAvatar(1);
-                    }
-                }else if(tamanhoLeitura == 7 ){
-                    // Debug.Log("Negativo");
-                    // Debug.Log(leitura);
-                    //separa aceleração
-                    // string[] leituraSep = leitura.Split(';');
-                    // // Debug.Log(leituraSep[0]);
-                    // string aceleracaoSep = leituraSep[0];
-                    // float aceleracao = float.Parse(aceleracaoSep);
-                    // int arredondar = -1;
-                    // float velocidade = arredondar * aceleracao * tempo;
-                    // Debug.Log(velocidade);
-                    // moveAvatar(0, 2.5f);
-                    h=-1;
-                    v=-1;
-                    if((h != 0 || v != 0) && !hitting){ 
-                        moveAvatar(0);
-                    }
-                }*/
-
-           /* }catch(System.Exception){
-                throw;
-            }
-        }*/
-
+        }
     }
 
     //função para mover player
@@ -157,10 +121,14 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         //verifica se a colisão foi com a bola
         if(other.CompareTag("Ball")){
+            Vector3 dir;
             //movimentando target usando teclado
-            // Vector3 dir = aimTarget.position - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
-            //movimentando target usando aleatoriedade
-            Vector3 dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
+            if(flagDificuldade == false){
+                dir = aimTarget.position - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
+            }else{
+                //movimentando target usando aleatoriedade
+                dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
+            }
             other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0); //bolinha
 
             Vector3 ballDir = ball.position - transform.position;

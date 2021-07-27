@@ -10,10 +10,11 @@ public class Bot : MonoBehaviour
 
     Vector3 targetPosition;
 
-    //originais
-    //float speed = 9.5f; //25
-    //float force = 10f; //15
+    //modo sem bluetooth
+    // float speed = 9.5f; //25
+    // float force = 10f; //15
     
+    //modo com bluetooth
     public static float speed;
     public static float force; //15
 

@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 {
     public Transform aimTarget; //alvo para onde a bolinha será lançada para o lado do bot
     
-    float speed = 6.0f; //velocidade da raquete que será multiplicada pela posição
+    float speed = 15.0f; //velocidade da raquete que será multiplicada pela posição
     float force = 15; //15
     
     bool hitting;
@@ -41,22 +41,39 @@ public class Player : MonoBehaviour
     public static int numLeitura;
     public static float tempoDecorrido;
 
+    int testeSBlue;
+
     void Start()
     {
+        testeSBlue = 1;
         aimTargetPosition = aimTarget.position;
         // porta = new SerialPort("/dev/ttyACM0", 115200);
         // porta.Open();
         // porta.ReadTimeout = -1; //InfiniteTimeout = -1
         // porta.DiscardInBuffer();
-        comunicBluetooth.porta.DiscardInBuffer();
-        comunicBluetooth.porta.DiscardOutBuffer();
-        flagConexao = true;
+        if(testeSBlue == 0){
+            comunicBluetooth.porta.DiscardInBuffer();
+            comunicBluetooth.porta.DiscardOutBuffer();
+            flagConexao = true;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(comunicBluetooth.porta.IsOpen){
+        if(testeSBlue == 1){
+            //capturar posição se pra frente, pra trás, pra direita ou pra esquerda
+            float h = Input.GetAxisRaw("Horizontal");
+            float v = Input.GetAxisRaw("Vertical");
+
+            if(h != 0 || v != 0){ 
+            //movimenta avatar
+                //time.deltatime evita alta taxa de atualização de quadros
+                transform.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //se não colocar uma velocidade o movimento do player é muito rapidamente
+            }
+            
+        }else{
+            if(comunicBluetooth.porta.IsOpen){
                 try{
                     //emite flag para arduino saber que a porta serial ta aberta
                     //arduino verifica se tem dados sendo recebidos via bluetooth
@@ -80,8 +97,6 @@ public class Player : MonoBehaviour
                         int tamanhoLeitura = leitura.Length;
                         tempoDecorrido += Time.deltaTime;
 
-                        string[] separacao = leitura.Split(';');
-                        float aceleration = float.Parse(separacao[0]);
 
                         if(tamanhoLeitura == 4){
                             Debug.Log("Vazio");
@@ -90,7 +105,6 @@ public class Player : MonoBehaviour
                             h=0;
                             v=0;
                         }else if(tamanhoLeitura == 6 ){
-                            acelMedia += aceleration;
                             numLeitura++;
                             h=1;
                             v=1;
@@ -98,7 +112,6 @@ public class Player : MonoBehaviour
                                 moveAvatar(1);
                             }
                         }else if(tamanhoLeitura == 7 ){
-                            acelMedia += aceleration * (-1);
                             numLeitura++;
                             h=-1;
                             v=-1;
@@ -109,21 +122,23 @@ public class Player : MonoBehaviour
                 }catch(System.Exception){
                     throw;
                 }
+            }
         }
+        
     }
 
     //função para mover player
     void moveAvatar(int direcao){
         if(direcao == 1){
             // transform.Translate(-Vector2.right * velocidade * Time.deltaTime, Space.World);
-            //transform.Translate(-Vector2.right * speed * Time.deltaTime);
-            transform.Translate(Vector2.right * speed * Time.deltaTime);
+            transform.Translate(-Vector2.right * speed * Time.deltaTime);
+            //transform.Translate(Vector2.right * speed * Time.deltaTime);
         }
 
         if(direcao == 0){
             // transform.Translate(Vector2.right * velocidade * Time.deltaTime, Space.World);
-            //transform.Translate(Vector2.right * speed * Time.deltaTime);
-            transform.Translate(-Vector2.right * speed * Time.deltaTime);
+            transform.Translate(Vector2.right * speed * Time.deltaTime);
+            //transform.Translate(-Vector2.right * speed * Time.deltaTime);
         }
     }
 
@@ -135,6 +150,7 @@ public class Player : MonoBehaviour
 
     //função para tratar colisões com a raquete -> bola + raquete 
     private void OnTriggerEnter(Collider other) {
+        Vector3 dirAtual = transform.position;
         //verifica se a colisão foi com a bola
         if(other.CompareTag("Ball")){
             numAcertos++;
@@ -156,7 +172,7 @@ public class Player : MonoBehaviour
         }
     }
 
-
+    
     //seta posição quando erra jogada
     // public void Reset(){
     //     if(servedRight){

@@ -20,7 +20,7 @@ public class comunicBluetooth : MonoBehaviour
     void Start()
     {
         if (SceneManager.GetActiveScene () == SceneManager.GetSceneByName ("sceneHandShake")){
-            porta = new SerialPort("/dev/ttyACM0", 115200);
+            porta = new SerialPort("/dev/ttyACM1", 115200);
             porta.Open();
             porta.ReadTimeout = -1; //InfiniteTimeout = -1
             porta.DiscardInBuffer();

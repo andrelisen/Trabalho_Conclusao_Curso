@@ -191,7 +191,7 @@ class _AceleroPage extends State<AceleroPage> {
         _aceleracao =
             (event.x).toStringAsFixed(2) + ";"; //6 positivo - 7 negativo
         // leituraAceleracao.cancel();
-        // print(event.x);
+        print(_aceleracao);
         _sendMessage(_aceleracao);
       });
     });

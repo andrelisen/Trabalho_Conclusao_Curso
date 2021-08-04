@@ -1,3 +1,4 @@
+import 'package:coletadados_tennis/testeCalibragem.dart';
 import 'package:flutter/material.dart';
 import 'package:coletadados_tennis/selecionaModulo.dart';
 
@@ -62,6 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                     ),
                   );
+                  //Navigator.push(
+                  //  context,
+                  //  MaterialPageRoute(builder: (context) => Calibragem()),
+                  //);
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Color(0xFF4D7DB4),

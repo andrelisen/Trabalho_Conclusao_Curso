@@ -12,6 +12,12 @@ TagManager:
   - Parede
   - ParedeEsq
   - ParedeDir
+  - playForaDir
+  - playForaEsq
+  - playForaTopo
+  - playMeio
+  - playEsq
+  - playDir
   layers:
   - Default
   - TransparentFX

@@ -25,13 +25,10 @@ class _AceleroPage extends State<AceleroPage> {
 
   bool isDisconnecting = false;
 
-  //Variáveis de retorno (mensagem) e captura da aceleração nos três eixos - x, y, z
-  int _flagColetaDados = 0;
-
-  double _calibragemParado;
-  int _numCalib = 0;
-  double _velocidade;
   String _aceleracao;
+  var _calibragemDir;
+  var _calibragemEsq;
+  var _acao;
 
   @override
   void initState() {
@@ -40,18 +37,14 @@ class _AceleroPage extends State<AceleroPage> {
     BluetoothConnection.toAddress(widget.server.address).then((_connection) {
       print('Conectado ao dispositivo');
       connection = _connection;
+      connection.output
+          .add(utf8.encode("3" + "\r\n")); //comunicação estabelecida
       setState(() {
         isConnecting = false;
         isDisconnecting = false;
       });
 
       connection.input.listen(_onDataReceived).onDone(() {
-        // Exemplo: Detectar qual lado fechou a conexão
-        // Deve haver um sinalizador `isDisconnecting` para mostrar se estamos (localmente)
-        // no meio do processo de desconexão, deve ser definido antes de chamar
-        // `dispose`,` finish` ou `close`, que causa a desconexão.
-        // Se excluirmos a desconexão, `onDone` deve ser disparado como resultado.
-        // Se não excluíssemos isso (sem sinalizador definido), significa fechar por remoto.
         if (isDisconnecting) {
           print('Desconectando localmente!');
         } else {
@@ -95,7 +88,7 @@ class _AceleroPage extends State<AceleroPage> {
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 100, 0, 0), //l, t, r, b
               child: Icon(
-                _flagColetaDados == 0 ? Icons.cached : Icons.swap_horiz_sharp,
+                _acao == 4 ? Icons.done_all : Icons.cached,
                 color: Color(0xFF2E5889),
                 size: 280,
               ),
@@ -104,9 +97,9 @@ class _AceleroPage extends State<AceleroPage> {
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
               child: Text(
-                _flagColetaDados == 0
-                    ? "AGUARDANDO INÍCIO DA PARTIDA"
-                    : "ENVIANDO DADOS VIA BLUETOOTH",
+                _acao == 4
+                    ? "CONEXÃO ESTABELECIDA"
+                    : "AGUARDANDO CONEXÃO",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -115,31 +108,6 @@ class _AceleroPage extends State<AceleroPage> {
                 ),
               ),
             ),
-            // Container(
-            //   alignment: Alignment.center,
-            //   padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-            //   child: ElevatedButton(
-            //     onPressed: () async {
-            //       // _tempoInicial = DateTime.now().second;
-            //       leituraSensores();
-            //       // leituraSensores();
-            //     },
-            //     // child: Text("Ligar"),
-            //     child: Text("Realizar captura"),
-            //   ),
-            // ),
-            // Container(
-            //   alignment: Alignment.center,
-            //   padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-            //   // child: Text(_dadosMovimento == "" &&
-            //   //         _aceleracaoY == "" &&
-            //   //         _dadosMovimento == ""
-            //   //     ? "Aguardando coleta de dados do acelerômetro"
-            //   //     : "[x, y, z] = [$_dadosMovimento, $_aceleracaoY, $_aceleracaoZ]"),
-            //   child: Text(_aceleracao == ""
-            //       ? "AGUARDANDO CAPTURA DA ACELERAÇÃO"
-            //       : "Aceleração = [$_aceleracao]"),
-            // ),
           ],
         ),
       ),
@@ -149,15 +117,21 @@ class _AceleroPage extends State<AceleroPage> {
   //recebe dados via bluetooth
   void _onDataReceived(Uint8List data) {
     print("Recebendo uma mensagem do módulo!");
+
     String entrada = new String.fromCharCodes(data);
 
-    //Converte string para inteiro
-    int entradaC = int.parse(entrada);
+    //variavel receptora de valores via bluetooth
+    int dadosBluetooth = int.parse(entrada);
 
     setState(() {
-      _flagColetaDados = entradaC;
-      //_sendMessage("1");
-      leituraSensores();
+      //Verifica ação necessária dependendo da entrada recebida via Bluetooth
+      if (dadosBluetooth == 0 || dadosBluetooth == 1) {
+        //calibragem
+
+      } else if (dadosBluetooth == 4) {
+        print("Conexao estabelecida");
+        _acao = 4;
+      }
     });
   }
 
@@ -171,70 +145,89 @@ class _AceleroPage extends State<AceleroPage> {
   //Captura dados do sensor acelerömetro desprezando a gravidade
   //Ou seja, apenas a aceleração do usuário sobre o smartphone
   void leituraSensores() async {
-    double somAcel = 0.0;
-    var leituraAceleracao;
-    double velocidadeAtual;
-    int tempoAtual;
     //Leitura dos sensores
-    //aceleração com os efeitos da gravidade - m/s²
-
     //aceleração com gravidade - m/s²
     accelerometerEvents.listen((AccelerometerEvent event) {
-      // velocidadeAtual = sqrt(event.x * event.x + event.y * event.y);
-      // tempoAtual = DateTime.now().second;
-
-      // double distancia = velocidadeAtual * tempoAtual;
-
-      // var distanciaShift = distancia.toStringAsFixed(2);
-
       setState(() {
-        _aceleracao =
-            (event.x).toStringAsFixed(2) + ";"; //6 positivo - 7 negativo
-        // leituraAceleracao.cancel();
-        print(_aceleracao);
+        _aceleracao = (event.x).toStringAsFixed(0);
+        //print(_aceleracao);
         _sendMessage(_aceleracao);
       });
     });
-
-    // double girando;
-
-    // gyroscopeEvents.listen((GyroscopeEvent event) {
-    //   setState(() {
-    //     girando = sqrt(event.x * event.x + event.y * event.y);
-    //     print(event);
-    //     _giro = (girando).toStringAsFixed(2) + ";"; //6 positivo - 7 negativo
-    //     //enviar orientação,velocidade
-    //     // leituraAceleracao.cancel();
-    //     _sendMessage(_giro);
-    //   });
-    // });
   }
 
-  //Função responsável pela calibragem do sensor
-  void calibragemSensores(int condicao) async {
-    double somAcel = 0.0;
+  void calibragem(int extremo) async {
+    //valor de calibragem p/ direita maximo
+    int valorDireitaMax = 0;
+    //valor de calibragem p/ esquerda maximo
+    int valorEsquerdaMax = 0;
 
-    var aceleracaoAtual;
-    var leituraAceleracao;
-    var velocidade;
+    //condição para a calibragem da extrema direita
+    if (extremo == 0) {
+      //Função para esperar por 2 segs e depois executa o que tem dentro da funcao
+      // await Future.delayed(const Duration(seconds: 5), () {
+      //   print("Olá, mundo!");
+      // });
 
-    print("Calibragem sensores");
-    if (condicao == 1) {
-      //aceleração sem a gravidade
-      leituraAceleracao =
-          userAccelerometerEvents.listen((UserAccelerometerEvent event) {
-        somAcel += event.x;
-        _velocidade =
-            sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
-        _numCalib++;
-        if (_numCalib == 60) {
-          leituraAceleracao.cancel();
-          _calibragemParado = somAcel / _numCalib;
-          aceleracaoAtual = _calibragemParado.toStringAsFixed(2);
-          velocidade = _velocidade.toStringAsFixed(2);
-          print("Calibragem parado é = $aceleracaoAtual");
-          print("Velocidade parado é = $velocidade");
+      //variavel de controle do num. de vezes da execução da função timer
+      int numVezes = 1;
+      //Função que executa a a cada 1 segundo
+      Timer.periodic(Duration(seconds: 1), (Timer timer) {
+        print("DIREITA - Segundos correntes: $numVezes");
+        var aceleration;
+        aceleration = accelerometerEvents.listen((AccelerometerEvent event) {
+          setState(() {
+            var acel = int.parse((event.x).toStringAsFixed(0));
+            if (acel == 0) {
+              //print("Zero!");
+            } else if (acel > valorDireitaMax) {
+              valorDireitaMax = acel;
+              //print(acel);
+            } else if (acel.abs() < valorDireitaMax) {
+              //print(valorDireitaMax);
+            }
+            _calibragemDir = valorDireitaMax.toString();
+          });
+        });
+
+        //Cancela função aos 15 segundos
+        if (numVezes == 15) {
+          numVezes = 1; //reinicializa numero de vezes
+          aceleration.cancel(); //cancela listen do acelerometro
+          timer.cancel(); //cancela funçao de timer
         }
+        numVezes++;
+      });
+    } else if (extremo == 1) {
+      //calibragem da extrema esquerda
+      //variavel de controle do num. de vezes da execução da função timer
+      int numVezes = 1;
+      //Função que executa a a cada 1 segundo
+      Timer.periodic(Duration(seconds: 1), (Timer timer) {
+        print("ESQUERDA - Segundos correntes: $numVezes");
+        var aceleration;
+        aceleration = accelerometerEvents.listen((AccelerometerEvent event) {
+          setState(() {
+            var acel = int.parse((event.x).toStringAsFixed(0));
+            if (acel == 0) {
+              //print("Zero!");
+            } else if (acel > valorEsquerdaMax) {
+              valorEsquerdaMax = acel;
+              //print(acel);
+            } else if (acel.abs() < valorEsquerdaMax) {
+              //print(valorDireitaMax);
+            }
+            _calibragemEsq = valorEsquerdaMax.toString();
+          });
+        });
+
+        //Cancela função aos 15 segundos
+        if (numVezes == 15) {
+          numVezes = 1; //reinicializa numero de vezes
+          aceleration.cancel(); //cancela listen do acelerometro
+          timer.cancel(); //cancela funçao de timer
+        }
+        numVezes++;
       });
     }
   }

@@ -11,20 +11,13 @@ public class controleTrocaCenas : MonoBehaviour
     }
 
     public void VerificaEncaminhamento(int encaminhar){
-        if(encaminhar == 1){
+        if(encaminhar == 0){
             coletaDadosFisicos.opcao = 2;
-            UnityEngine.SceneManagement.SceneManager.LoadScene("sceneColetaDadosFisicos"); //Coletar dados físicos 
-        }else if(encaminhar == 2){
-            UnityEngine.SceneManagement.SceneManager.LoadScene("sceneConfigPartida"); //Configura nova partida
-        }
-
-        if(encaminhar == 0 && coletaDadosFisicos.opcao == 1){
+            UnityEngine.SceneManagement.SceneManager.LoadScene("sceneColetaDadosFisicos");
+        }else if(encaminhar == 1 && coletaDadosFisicos.opcao == 2){
+            UnityEngine.SceneManagement.SceneManager.LoadScene("sceneFinalizado");
+        }else if(encaminhar == 1 && coletaDadosFisicos.opcao == 1){
             UnityEngine.SceneManagement.SceneManager.LoadScene("sceneConfigPartida");
         }
-
-        if(coletaDadosFisicos.opcao == 2 && encaminhar == 1){
-            UnityEngine.SceneManagement.SceneManager.LoadScene("sceneFinalizado");
-        }
-
     }
 }

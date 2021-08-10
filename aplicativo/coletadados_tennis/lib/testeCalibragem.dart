@@ -23,7 +23,7 @@ class _CalibragemState extends State<Calibragem> {
         body: SafeArea(
           child: Column(
             children: [
-              Container(
+              /*Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 0), //l, t, r, b
                 child: Text(
@@ -34,13 +34,13 @@ class _CalibragemState extends State<Calibragem> {
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 0), //l, t, r, b
                 child: Text(
                     _extremoEsq == null ? "AGUARDANDO ESQUERDA" : _extremoEsq),
-              ),
+              ),*/
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
                 child: ElevatedButton(
                   onPressed: () async {
-                    calibragem(1);
+                    //calibragem(1);
                   },
                   // child: Text("Ligar"),
                   child: Text("DIREITA"),

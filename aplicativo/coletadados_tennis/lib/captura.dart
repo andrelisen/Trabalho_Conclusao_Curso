@@ -83,12 +83,40 @@ class _AceleroPage extends State<AceleroPage> {
                   : Text('Log com ' + widget.server.name))),
       body: SafeArea(
         child: Column(
-          children: [
+          children: [ 
+            /*Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    _sendMessage("D");
+                  },
+                  // child: Text("Ligar"),
+                  child: Text("DIREITA"),
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    _sendMessage("E");
+                  },
+                  // child: Text("Ligar"),
+                  child: Text("ESQUERDA"),
+                ),
+              ),*/
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 100, 0, 0), //l, t, r, b
               child: Icon(
-                _acao == 4 ? Icons.done_all : Icons.cached,
+                _acao == 1 
+                ? Icons.build_circle_outlined 
+                : _acao == 2
+                  ? Icons.compare_arrows
+                  : _acao == 3
+                    ? Icons.done_all
+                    : Icons.loop_outlined,
                 color: Color(0xFF2E5889),
                 size: 280,
               ),
@@ -97,7 +125,11 @@ class _AceleroPage extends State<AceleroPage> {
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
               child: Text(
-                _acao == 4
+                _acao == 1 
+                ? "REALIZANDO CALIBRAGEM"
+                : _acao == 2
+                  ? "CAPTURANDO MOVIMENTO"
+                  : _acao == 3
                     ? "CONEXÃO ESTABELECIDA"
                     : "AGUARDANDO CONEXÃO",
                 textAlign: TextAlign.center,
@@ -120,6 +152,8 @@ class _AceleroPage extends State<AceleroPage> {
 
     String entrada = new String.fromCharCodes(data);
 
+    print(entrada);
+
     //variavel receptora de valores via bluetooth
     int dadosBluetooth = int.parse(entrada);
 
@@ -127,22 +161,31 @@ class _AceleroPage extends State<AceleroPage> {
       //Verifica ação necessária dependendo da entrada recebida via Bluetooth
       if (dadosBluetooth == 0 || dadosBluetooth == 1) {
         //calibragem
-
-      } else if (dadosBluetooth == 4) {
-        print("Conexao estabelecida");
-        _acao = 4;
+        print("Calibragem");
+        _sendMessage("6");//emite aviso de calibragem em 5seg para o jogo
+        calibragem(dadosBluetooth);
+        _acao = 1; //realizando calibragem
+      }else if(dadosBluetooth == 2){
+        //movimento
+        print("Movimento");
+        //_sendMessage("Capturando");
+        _acao = 2; //capturando movimento
+      }else if (dadosBluetooth == 4) {
+        //conexão estabelecida ok 
+        print("Conexão");
+        _acao = 3;
       }
     });
   }
 
   //envia dados via bluetooth
   void _sendMessage(String saida) async {
-    // print("Enviando uma mensagem ao módulo!");
+    print("Enviando uma mensagem ao módulo!");
     saida = saida.trim();
     connection.output.add(utf8.encode(saida + "\r\n"));
   }
 
-  //Captura dados do sensor acelerömetro desprezando a gravidade
+  //Captura dados do sensor acelerömetro desprezando gravidade
   //Ou seja, apenas a aceleração do usuário sobre o smartphone
   void leituraSensores() async {
     //Leitura dos sensores
@@ -162,12 +205,14 @@ class _AceleroPage extends State<AceleroPage> {
     //valor de calibragem p/ esquerda maximo
     int valorEsquerdaMax = 0;
 
+    //Função para esperar por 2 segs e depois executa o que tem dentro da funcao
+    //Função de delay para dar inicio a calibragem
+    await Future.delayed(const Duration(seconds: 15), () {
+      print("Delay da calibragem executado!");
+    });
+
     //condição para a calibragem da extrema direita
     if (extremo == 0) {
-      //Função para esperar por 2 segs e depois executa o que tem dentro da funcao
-      // await Future.delayed(const Duration(seconds: 5), () {
-      //   print("Olá, mundo!");
-      // });
 
       //variavel de controle do num. de vezes da execução da função timer
       int numVezes = 1;
@@ -230,5 +275,7 @@ class _AceleroPage extends State<AceleroPage> {
         numVezes++;
       });
     }
+    print(_calibragemDir);
+    print(_calibragemEsq);
   }
 }

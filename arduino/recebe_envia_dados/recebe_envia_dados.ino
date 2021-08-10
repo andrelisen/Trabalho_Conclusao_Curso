@@ -20,20 +20,70 @@ void setup() {
 }
 
 void loop() {
+  
   if(Serial2.available()){
-    if(Serial2.read() == '3'){
+    //valor recebido do smartphone    
+    int valorRecebidoSmartphone = Serial2.read();
+    
+    if(valorRecebidoSmartphone == '3'){ //conexão estabelecida
+      digitalWrite(53, HIGH);
+      delay(100);
+      digitalWrite(53, LOW);
       Serial2.write("4");
+    }else if(valorRecebidoSmartphone == '6'){ //aviso de inicio da calibragem em 5 segundos
+      Serial.write("6");
+    }else if(valorRecebidoSmartphone == 68){ //direita
+      digitalWrite(53, HIGH);
+      delay(100);
+      digitalWrite(53, LOW);
+      delay(100);
+      digitalWrite(53, HIGH);
+      delay(100);
+      digitalWrite(53, LOW);
+      Serial.write("D");
+    }else if(valorRecebidoSmartphone == 69){ //esquerda
+      digitalWrite(53, HIGH);
+      delay(100);
+      digitalWrite(53, LOW);
+      Serial.write("E");
     }
-//      Serial.write(Serial2.read());
   }
+  
   if(Serial.available()){ 
-    if(Serial.read() == '1' || Serial.read() == '0'){ //Calibragem
-      Serial2.write(Serial.read()); 
-    }else if(Serial.read() == '2'){ //Movimento
-      Serial2.write("2"); 
-    }else if(Serial.read() == '5'){ //Restart
+    //valor recebido da unity    
+    int valorRecebidoUnity = Serial.read();
+ 
+    if(valorRecebidoUnity == '0'){ //calibragem direita
+      digitalWrite(53, HIGH);
+      delay(100);
+      digitalWrite(53, LOW);
+      Serial2.write("0");
+    }else if(valorRecebidoUnity == '1'){ //calibragem esquerda
+      digitalWrite(53, HIGH);
+      delay(100);
+      digitalWrite(53, LOW);
+      delay(100);
+      digitalWrite(53, HIGH);
+      delay(100);
+      digitalWrite(53, LOW);
+      Serial2.write("1");
+    }else if(valorRecebidoUnity == '2'){ //movimento
+      digitalWrite(53, HIGH);
+      delay(100);
+      digitalWrite(53, LOW);
+      delay(100);
+      digitalWrite(53, HIGH);
+      delay(100);
+      digitalWrite(53, LOW);
+      delay(100);
+      digitalWrite(53, HIGH);
+      delay(100);
+      digitalWrite(53, LOW);
+      Serial2.write("2");
+    }else if(valorRecebidoUnity == '5'){ //restart
       Serial2.write("5");
     }
+    
   }
        
 }

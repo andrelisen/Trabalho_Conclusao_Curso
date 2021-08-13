@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 {
     public Transform aimTarget; //alvo para onde a bolinha será lançada para o lado do bot
     
-    float speed = 15.0f; //velocidade da raquete que será multiplicada pela posição
+    float speed = 20.0f; //velocidade da raquete que será multiplicada pela posição
     float force = 15; //15
     
     bool hitting;
@@ -43,40 +43,78 @@ public class Player : MonoBehaviour
         // porta.DiscardInBuffer();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
-            
-            //capturar posição se pra frente, pra trás, pra direita ou pra esquerda
-            float h = Input.GetAxisRaw("Horizontal"); //direita = 1 esquerda = -1
-            float v = Input.GetAxisRaw("Vertical");
-
-            if(h != 0 || v != 0){ 
-            //movimenta avatar
-                //time.deltatime evita alta taxa de atualização de quadros
-                // transform.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //se não colocar uma velocidade o movimento do player é muito rapidamente
-                    // playerRb.velocity = new Vector3(0, 0, h) * speed;
-                    if(h == 1f){
-                        transform.position += new Vector3(0, 0, 1 * speed * Time.deltaTime);
-                    }else{
-                        transform.position += new Vector3(0, 0, -1 * speed * Time.deltaTime);
-                    }
-            }
-                    
+        if(configCalibragem.porta.IsOpen){
+            try{
+                 if(configCalibragem.porta.BytesToRead == 0){ //Não está sendo recebido dados no buffer
+                     //Debug.Log(porta.BytesToRead);
+                      Debug.Log("Sem recebimento de dados B!");
+                 }else{
+                    int dadoNoSensor = configCalibragem.porta.ReadByte();
+                     configCalibragem.porta.DiscardInBuffer();
+                     // if(dadoNoSensor == 68 || dadoNoSensor == 69 || dadoNoSensor == 80){ //se for dados de movimento
+                     Debug.Log("Recebimento de dados de MOVIMENTAÇÃO!");
+                     configCalibragem.porta.Write("2");
+                     //     //moveAvatar(dadoNoSensor);
+                         if(dadoNoSensor == 68){ //direita
+                             Debug.Log("Direita");
+                             transform.position += new Vector3(0, 0, 1 * speed * Time.deltaTime);
+                         }else if(dadoNoSensor == 69){ //esquerda
+                             Debug.Log("Esquerda");
+                             transform.position += new Vector3(0, 0, -1 * speed * Time.deltaTime);
+                         }else if(dadoNoSensor == 80){ //parado
+                             Debug.Log("Parado");
+                             transform.position += new Vector3(0, 0, 0 * speed * Time.deltaTime);
+                         }
+                     // }
+                 }
+             }catch(System.Exception){
+                 throw;
+             }
+         }    
     }
 
-    //função para mover player
+    //função para mover o avatar usando como entrada de dados o nó sensor
     void moveAvatar(int direcao){
-        if(direcao == 1){
-            // transform.Translate(-Vector2.right * velocidade * Time.deltaTime, Space.World);
-            transform.Translate(-Vector2.right * speed * Time.deltaTime);
-            //transform.Translate(Vector2.right * speed * Time.deltaTime);
+        if(direcao == 68){ //direita
+          Debug.Log("Direita");
+          transform.position += new Vector3(0, 0, 1 * speed * Time.deltaTime);
+        }else if(direcao == 69){ //esquerda
+            Debug.Log("Esquerda");
+            transform.position += new Vector3(0, 0, -1 * speed * Time.deltaTime);
+        }else if(direcao == 80){ //parado
+            Debug.Log("Parado");
+            transform.position += new Vector3(0, 0, 0 * speed * Time.deltaTime);
         }
+    }
 
-        if(direcao == 0){
-            // transform.Translate(Vector2.right * velocidade * Time.deltaTime, Space.World);
-            transform.Translate(Vector2.right * speed * Time.deltaTime);
-            //transform.Translate(-Vector2.right * speed * Time.deltaTime);
+    //função para mover o avatar usando como entrada de dados o teclado
+    void movimentaUsandoTeclado(){
+
+        
+        //capturar posição se pra frente, pra trás, pra direita ou pra esquerda
+        float h = Input.GetAxisRaw("Horizontal"); //direita = 1 esquerda = -1
+        float v = Input.GetAxisRaw("Vertical");
+
+        if(h != 0 || v != 0){ //movimenta avatar
+            //time.deltatime evita alta taxa de atualização de quadros
+            // transform.Translate(new Vector3(h, 0, v) * speed * Time.deltaTime); //se não colocar uma velocidade o movimento do player é muito rapidamente
+            // playerRb.velocity = new Vector3(0, 0, h) * speed;
+            // Debug.Log(Time.deltaTime);
+            if(h == 1f){ //direita
+                Debug.Log("Posição Atual D = ");
+                Debug.Log(transform.position.z);
+                transform.position += new Vector3(0, 0, 1 * speed * Time.deltaTime); //Time.deltatime = fazer o movimento c/ velocidade constante - retorna 0.02
+                Debug.Log("Posição Depois D = ");
+                Debug.Log(transform.position.z);
+            }else{ //esquerda
+                Debug.Log("Posição Atual E = ");
+                Debug.Log(transform.position.z);
+                transform.position += new Vector3(0, 0, -1 * speed * Time.deltaTime);
+                Debug.Log("Posição Depois E = ");
+                Debug.Log(transform.position.z);
+            }
         }
     }
 

@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
             alignment: Alignment.center,
             padding: const EdgeInsets.fromLTRB(
                 0, 30, 0, 0), //left, top, right, bottom)
-            child: SizedBox(
+            child: SizedBox( 
               width: 150,
               height: 45,
               child: (ElevatedButton(

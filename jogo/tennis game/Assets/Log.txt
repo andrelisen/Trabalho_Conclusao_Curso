@@ -1,0 +1,6 @@
+Logs TennisGame Physio 
+
+Log date:11/08/2021 14:17:55
+Fisioterapeuta: DIGITE SEU NOME Paciente: b Nível Amputação: Superior Idade: 2 Sexo: Feminino
+Dados físicos antes da sessão: Pressão Arterial: 8Batimentos cardíacos: 9Oxigenação do sangue: 1Observações: nada
+Dados físicos depois da sessão: Pressão Arterial: 1Batimentos cardíacos: 1Oxigenação do sangue: 1Observações: a

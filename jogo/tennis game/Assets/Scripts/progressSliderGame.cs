@@ -46,7 +46,16 @@ public class progressSliderGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(controllGame.startGame == 1){
+            if(configCalibragem.porta.IsOpen){
+                try{
+                    configCalibragem.porta.Write("2");
+                }catch(System.Exception){
+                    throw;
+                }
+
+            }
+        }
     }
 
     //função para atrasar inicio da partida em 5s

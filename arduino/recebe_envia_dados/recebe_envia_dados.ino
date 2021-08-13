@@ -30,22 +30,16 @@ void loop() {
       delay(100);
       digitalWrite(53, LOW);
       Serial2.write("4");
-    }else if(valorRecebidoSmartphone == '6'){ //aviso de inicio da calibragem em 5 segundos
+    }else if(valorRecebidoSmartphone == '6'){ //aviso de inicio da calibragem 
       Serial.write("6");
+    }else if(valorRecebidoSmartphone == '7'){ //calibragem concluida
+      Serial.write("7");
     }else if(valorRecebidoSmartphone == 68){ //direita
-      digitalWrite(53, HIGH);
-      delay(100);
-      digitalWrite(53, LOW);
-      delay(100);
-      digitalWrite(53, HIGH);
-      delay(100);
-      digitalWrite(53, LOW);
       Serial.write("D");
     }else if(valorRecebidoSmartphone == 69){ //esquerda
-      digitalWrite(53, HIGH);
-      delay(100);
-      digitalWrite(53, LOW);
       Serial.write("E");
+    }else if(valorRecebidoSmartphone == 80){ //parado
+      Serial.write("P");
     }
   }
   
@@ -54,31 +48,10 @@ void loop() {
     int valorRecebidoUnity = Serial.read();
  
     if(valorRecebidoUnity == '0'){ //calibragem direita
-      digitalWrite(53, HIGH);
-      delay(100);
-      digitalWrite(53, LOW);
       Serial2.write("0");
     }else if(valorRecebidoUnity == '1'){ //calibragem esquerda
-      digitalWrite(53, HIGH);
-      delay(100);
-      digitalWrite(53, LOW);
-      delay(100);
-      digitalWrite(53, HIGH);
-      delay(100);
-      digitalWrite(53, LOW);
       Serial2.write("1");
     }else if(valorRecebidoUnity == '2'){ //movimento
-      digitalWrite(53, HIGH);
-      delay(100);
-      digitalWrite(53, LOW);
-      delay(100);
-      digitalWrite(53, HIGH);
-      delay(100);
-      digitalWrite(53, LOW);
-      delay(100);
-      digitalWrite(53, HIGH);
-      delay(100);
-      digitalWrite(53, LOW);
       Serial2.write("2");
     }else if(valorRecebidoUnity == '5'){ //restart
       Serial2.write("5");

@@ -26,8 +26,9 @@ class _AceleroPage extends State<AceleroPage> {
   bool isDisconnecting = false;
 
   String _aceleracao;
-  var _calibragemDir;
-  var _calibragemEsq;
+  var _direcao;
+  int _calibragemDir;
+  int _calibragemEsq;
   var _acao;
 
   @override
@@ -84,28 +85,28 @@ class _AceleroPage extends State<AceleroPage> {
       body: SafeArea(
         child: Column(
           children: [ 
-            /*Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    _sendMessage("D");
-                  },
-                  // child: Text("Ligar"),
-                  child: Text("DIREITA"),
-                ),
-              ),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    _sendMessage("E");
-                  },
-                  // child: Text("Ligar"),
-                  child: Text("ESQUERDA"),
-                ),
-              ),*/
+            // Container(
+            //     alignment: Alignment.center,
+            //     padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+            //     child: ElevatedButton(
+            //       onPressed: () async {
+            //         usandoGiroscopio();
+            //       },
+            //       // child: Text("Ligar"),
+            //       child: Text("MOVIMENTO"),
+            //     ),
+            //   ),
+            //   Container(
+            //     alignment: Alignment.center,
+            //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            //     child: ElevatedButton(
+            //       onPressed: () async {
+            //         _sendMessage("E");
+            //       },
+            //       // child: Text("Ligar"),
+            //       child: Text("ESQUERDA"),
+            //     ),
+            //   ),
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.fromLTRB(0, 100, 0, 0), //l, t, r, b
@@ -126,9 +127,9 @@ class _AceleroPage extends State<AceleroPage> {
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
               child: Text(
                 _acao == 1 
-                ? "REALIZANDO CALIBRAGEM"
+                ? "REALIZANDO CALIBRAGEM | DIREITA = $_calibragemDir ESQUERDA = $_calibragemEsq"
                 : _acao == 2
-                  ? "CAPTURANDO MOVIMENTO"
+                  ? "CAPTURANDO MOVIMENTO: $_direcao"
                   : _acao == 3
                     ? "CONEXÃO ESTABELECIDA"
                     : "AGUARDANDO CONEXÃO",
@@ -162,12 +163,13 @@ class _AceleroPage extends State<AceleroPage> {
       if (dadosBluetooth == 0 || dadosBluetooth == 1) {
         //calibragem
         print("Calibragem");
-        _sendMessage("6");//emite aviso de calibragem em 5seg para o jogo
-        calibragem(dadosBluetooth);
+        _sendMessage("6");//emite aviso de inicio da calibragem para o jogo
+        calibragemGiroscopio(dadosBluetooth);
         _acao = 1; //realizando calibragem
       }else if(dadosBluetooth == 2){
         //movimento
         print("Movimento");
+        movimentoAvatarGiroscopio();
         //_sendMessage("Capturando");
         _acao = 2; //capturando movimento
       }else if (dadosBluetooth == 4) {
@@ -199,7 +201,7 @@ class _AceleroPage extends State<AceleroPage> {
     });
   }
 
-  void calibragem(int extremo) async {
+  void calibragemAcelerometro(int extremo) async {
     //valor de calibragem p/ direita maximo
     int valorDireitaMax = 0;
     //valor de calibragem p/ esquerda maximo
@@ -207,10 +209,9 @@ class _AceleroPage extends State<AceleroPage> {
 
     //Função para esperar por 2 segs e depois executa o que tem dentro da funcao
     //Função de delay para dar inicio a calibragem
-    await Future.delayed(const Duration(seconds: 15), () {
-      print("Delay da calibragem executado!");
-    });
-
+    //await Future.delayed(const Duration(seconds: 15), () {
+    //  print("Delay da calibragem executado!");
+    //});
     //condição para a calibragem da extrema direita
     if (extremo == 0) {
 
@@ -231,13 +232,15 @@ class _AceleroPage extends State<AceleroPage> {
             } else if (acel.abs() < valorDireitaMax) {
               //print(valorDireitaMax);
             }
-            _calibragemDir = valorDireitaMax.toString();
+            //_calibragemDir = valorDireitaMax.toString();
+            _calibragemDir = valorDireitaMax;
           });
         });
 
         //Cancela função aos 15 segundos
         if (numVezes == 15) {
           numVezes = 1; //reinicializa numero de vezes
+          _sendMessage("7"); //envia msg de conclusão da calibragem
           aceleration.cancel(); //cancela listen do acelerometro
           timer.cancel(); //cancela funçao de timer
         }
@@ -256,26 +259,185 @@ class _AceleroPage extends State<AceleroPage> {
             var acel = int.parse((event.x).toStringAsFixed(0));
             if (acel == 0) {
               //print("Zero!");
-            } else if (acel > valorEsquerdaMax) {
+            } else if (acel < valorEsquerdaMax) {
               valorEsquerdaMax = acel;
               //print(acel);
             } else if (acel.abs() < valorEsquerdaMax) {
               //print(valorDireitaMax);
             }
-            _calibragemEsq = valorEsquerdaMax.toString();
+            //_calibragemEsq = valorEsquerdaMax.toString();
+            _calibragemEsq = valorEsquerdaMax;
           });
         });
 
         //Cancela função aos 15 segundos
         if (numVezes == 15) {
           numVezes = 1; //reinicializa numero de vezes
+          _sendMessage("7"); //envia msg de conclusão da calibragem
           aceleration.cancel(); //cancela listen do acelerometro
           timer.cancel(); //cancela funçao de timer
         }
         numVezes++;
       });
     }
-    print(_calibragemDir);
-    print(_calibragemEsq);
   }
+
+  void movimentoAvatarAcelerometro(){
+        accelerometerEvents.listen((AccelerometerEvent event) {
+          setState(() {
+            var valorAceleracaoAtual = int.parse((event.x).toStringAsFixed(0));
+            if(valorAceleracaoAtual == _calibragemDir){
+              // print("DIREITA");
+              // print("Aceleração = $valorAceleracaoAtual");
+              // print("-----------------");
+              _sendMessage("D");
+            }else if(valorAceleracaoAtual == _calibragemEsq){
+              // print("ESQUERDA");
+              // print("Aceleração = $valorAceleracaoAtual");
+              // print("-----------------");
+              _sendMessage("E");
+            }else{
+              // print("PARADO");
+              // print("Aceleração = $valorAceleracaoAtual");
+              // print("-----------------");
+              _sendMessage("P");
+            }
+            //usando valores pre-configurados
+            /*if(valorAceleracaoAtual == 0){
+              print("PARADO");
+              print(valorAceleracaoAtual);
+              print("-----------------");
+            }else if(valorAceleracaoAtual == 10){
+              print("DIREITA");
+              print(valorAceleracaoAtual);
+              print("-----------------");
+            }else if(valorAceleracaoAtual == (-6)){
+              print("ESQUERDA");
+              print(valorAceleracaoAtual);
+              print("-----------------");
+            }*/
+            //Usando intervalo entre valores de calibragem e maior/menor que 1/-1
+            /*if(valorAcelerecaoAtual > 1 && valorAcelerecaoAtual <= _calibragemDir){
+              _sendMessage("DIREITA");
+              _direcao = "D";
+              //print("D");
+            }else if(valorAcelerecaoAtual >= _calibragemEsq && valorAcelerecaoAtual < (-1)){
+              _sendMessage("ESQUERDA");
+              _direcao = "E";
+              //print("E");
+              }else if(valorAcelerecaoAtual == 0 || valorAcelerecaoAtual == 1 || valorAcelerecaoAtual == (-1)){
+              _sendMessage("PARADO");
+              _direcao = "P";
+              //print("P");
+            } */
+          });
+        });
+  }
+
+  void calibragemGiroscopio(int extremo) async {
+    //valor de calibragem p/ direita maximo
+    int valorDireitaMax = 0;
+    //valor de calibragem p/ esquerda maximo
+    int valorEsquerdaMax = 0;
+
+    //Função para esperar por 2 segs e depois executa o que tem dentro da funcao
+    //Função de delay para dar inicio a calibragem
+    //await Future.delayed(const Duration(seconds: 15), () {
+    //  print("Delay da calibragem executado!");
+    //});
+    //condição para a calibragem da extrema direita
+    if (extremo == 0) {
+
+      //variavel de controle do num. de vezes da execução da função timer
+      int numVezes = 1;
+      //Função que executa a a cada 1 segundo
+      Timer.periodic(Duration(seconds: 1), (Timer timer) {
+        print("DIREITA - Segundos correntes: $numVezes");
+        var giroscopio;
+        giroscopio = gyroscopeEvents.listen((GyroscopeEvent event) {
+          setState(() {
+            var giro = int.parse((event.z).toStringAsFixed(0));
+            if (giro == 0) {
+              //print("Zero!");
+            } else if (giro < valorDireitaMax) {
+              valorDireitaMax = giro;
+              //print(acel);
+            } else if (giro.abs() < valorDireitaMax) {
+              //print(valorDireitaMax);
+            }
+            //_calibragemDir = valorDireitaMax.toString();
+            _calibragemDir = valorDireitaMax;
+          });
+        });
+
+        //Cancela função aos 15 segundos
+        if (numVezes == 15) {
+          numVezes = 1; //reinicializa numero de vezes
+          _sendMessage("7"); //envia msg de conclusão da calibragem
+          giroscopio.cancel(); //cancela listen do giroscópio
+          timer.cancel(); //cancela funçao de timer
+        }
+        numVezes++;
+      });
+    } else if (extremo == 1) {
+      //calibragem da extrema esquerda
+      //variavel de controle do num. de vezes da execução da função timer
+      int numVezes = 1;
+      //Função que executa a a cada 1 segundo
+      Timer.periodic(Duration(seconds: 1), (Timer timer) {
+        print("ESQUERDA - Segundos correntes: $numVezes");
+        var giroscopio;
+        giroscopio = gyroscopeEvents.listen((GyroscopeEvent event) {
+          setState(() {
+            var giro = int.parse((event.x).toStringAsFixed(0));
+            if (giro == 0) {
+              //print("Zero!");
+            } else if (giro > valorEsquerdaMax) {
+              valorEsquerdaMax = giro;
+              //print(acel);
+            } else if (giro.abs() < valorEsquerdaMax) {
+              //print(valorDireitaMax);
+            }
+            //_calibragemEsq = valorEsquerdaMax.toString();
+            _calibragemEsq = valorEsquerdaMax;
+          });
+        });
+
+        //Cancela função aos 15 segundos
+        if (numVezes == 15) {
+          numVezes = 1; //reinicializa numero de vezes
+          _sendMessage("7"); //envia msg de conclusão da calibragem
+          giroscopio.cancel(); //cancela listen do giroscópio
+          timer.cancel(); //cancela funçao de timer
+        }
+        numVezes++;
+      });
+    }
+  }
+
+  void movimentoAvatarGiroscopio(){
+    var giroscopioMove;
+    giroscopioMove = gyroscopeEvents.listen((GyroscopeEvent event) {
+      // print(int.parse((event.z).toStringAsFixed(0)));
+
+      int valorGiroscopioAtual = int.parse((event.z).toStringAsFixed(0));
+      setState(() {
+        if(valorGiroscopioAtual >= 1 && valorGiroscopioAtual <= _calibragemEsq){
+        _sendMessage("E");
+          _direcao = "E";
+          print("E");
+        }else if(valorGiroscopioAtual >= _calibragemDir && valorGiroscopioAtual <= (-1)){
+        _sendMessage("D");
+          _direcao = "D";
+          print("D");
+        }else if(valorGiroscopioAtual == 0){
+          _sendMessage("P");
+          _direcao = "P";
+          print("P");
+        }
+        giroscopioMove.cancel();
+      });
+    });
+  }
+
 }

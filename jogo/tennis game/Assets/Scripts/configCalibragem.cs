@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO.Ports;
 using UnityEngine.UI;
+using System.Globalization;
+using System.IO;
+using System;
 
 public class configCalibragem : MonoBehaviour
 {
@@ -26,6 +29,8 @@ public class configCalibragem : MonoBehaviour
     public GameObject txtSaidaEsquerda;
     //GameObject com o btn ao final da calibragem para ir para a configuração da partida
     public GameObject botaoSeguir;
+
+    int moveVerdade = 0;
     void Start()
     {
         string [] portasDisponiveis = SerialPort.GetPortNames(); //coleta porta serial disponivel
@@ -40,27 +45,30 @@ public class configCalibragem : MonoBehaviour
 
     void Update()
     {
+        
+        // Debug.Log(float.Parse("3.5", CultureInfo.InvariantCulture));
+
         if(porta.IsOpen){
             try{
                 //Verifica se está sendo recebido dados 
                 //Debug.Log(porta.BytesToRead);
                 if(porta.BytesToRead == 0){ //Não está sendo recebido dados no buffer
                     //Debug.Log(porta.BytesToRead);
-                     Debug.Log("Sem recebimento de dados A!");
+                    //  Debug.Log("Sem recebimento de dados A!");
                 }else{ //Iniciou o recebimento de dados no buffer
-                    //Debug.Log("Entrada recebida!");
+                    // Debug.Log("Entrada recebida!");
                     int lePorta = porta.ReadByte();
                     porta.DiscardInBuffer();
                     //Debug.Log(lePorta);
                     if(lePorta == 54){ //calibragem sera iniciada 
                         if(posicaoCalibragem == 0){ //calibragem para a direita
-                            Debug.Log("Calibragem para a direita INICIADA!");
+                            // Debug.Log("Calibragem para a direita INICIADA!");
                             botaoInit.SetActive(false);
                             txtMover.SetActive(true);
                             iconeIndicativoDireita.SetActive(true);
                             iconeIndicativoEsquerda.SetActive(false);
                         }else if(posicaoCalibragem == 1){ //calibragem para a esquerda
-                            Debug.Log("Calibragem para a esquerda INICIADA!");
+                            // Debug.Log("Calibragem para a esquerda INICIADA!");
                             botaoInit.SetActive(false);
                             txtMover.SetActive(true);
                             iconeIndicativoDireita.SetActive(false);
@@ -70,7 +78,7 @@ public class configCalibragem : MonoBehaviour
                     }else if(lePorta == 55){ //calibragem concluida 
                         if(posicaoCalibragem == 0){
                             //renderizar elementos p/ iniciar a calibragem para a esquerda
-                            Debug.Log("Calibragem para a direita CONCLUIDA!");
+                            // Debug.Log("Calibragem para a direita CONCLUIDA!");
                             txtSaidaDireita.GetComponent<Text>().text = "CALIBRAGEM PARA A DIREITA  ✓ ";
                             txtSaidaEsquerda.GetComponent<Text>().text = "CALIBRAGEM PARA A ESQUERDA  ✘ ";
                             txtInstrucao.GetComponent<Text>().text = "CALIBRAGEM PARA A ESQUERDA";
@@ -81,7 +89,7 @@ public class configCalibragem : MonoBehaviour
                             iconeIndicativoEsquerda.SetActive(false);
                         }else{
                             txtSaidaEsquerda.GetComponent<Text>().text = "CALIBRAGEM PARA A ESQUERDA  ✓ ";
-                            Debug.Log("Calibragem para a esquerda CONCLUIDA!");
+                            // Debug.Log("Calibragem para a esquerda CONCLUIDA!");
                             txtInstrucao.GetComponent<Text>().text = "CALIBRAGEM CONCLUÍDA";
                             botaoSeguir.SetActive(true);
                             botaoInit.SetActive(false);
@@ -90,6 +98,18 @@ public class configCalibragem : MonoBehaviour
                             iconeIndicativoEsquerda.SetActive(false);
                         }
                     }
+
+                    //Teste de recebimento de informações
+                    // if(moveVerdade == 1){
+                    //     string dadoNoSensor = porta.ReadTo("\n");
+                    //     porta.DiscardInBuffer();
+
+                    //     porta.Write("2");
+                    //     porta.DiscardOutBuffer();
+
+                    //     Debug.Log("Valor recebido: " + dadoNoSensor);
+                    // }
+
                 }
             }catch(System.Exception){
                 throw;
@@ -106,6 +126,7 @@ public class configCalibragem : MonoBehaviour
                     porta.Write("1");
                 }else if(opcao == 2){
                     porta.Write("2");
+                    moveVerdade = 1;
                 }
             }catch(System.Exception){
                 throw;
@@ -120,11 +141,11 @@ public class configCalibragem : MonoBehaviour
                 if(posicaoCalibragem == 0){
                     //direita
                     porta.Write("0");
-                    Debug.Log("Calibragem direita");
+                    // Debug.Log("Calibragem direita");
                 }else if(posicaoCalibragem == 1){
                     //esquerda
                     porta.Write("1");
-                    Debug.Log("Calibragem esquerda");
+                    // Debug.Log("Calibragem esquerda");
                 }
             }catch(System.Exception){
                 throw;

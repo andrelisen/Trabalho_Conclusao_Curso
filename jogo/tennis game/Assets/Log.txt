@@ -4,3 +4,7 @@ Log date:11/08/2021 14:17:55
 Fisioterapeuta: DIGITE SEU NOME Paciente: b Nível Amputação: Superior Idade: 2 Sexo: Feminino
 Dados físicos antes da sessão: Pressão Arterial: 8Batimentos cardíacos: 9Oxigenação do sangue: 1Observações: nada
 Dados físicos depois da sessão: Pressão Arterial: 1Batimentos cardíacos: 1Oxigenação do sangue: 1Observações: a
+Log date:17/08/2021 11:43:44
+Fisioterapeuta: DIGITE SEU NOME Paciente: aa Nível Amputação: Inferior Idade: 22 Sexo: Feminino
+Dados físicos antes da sessão: Pressão Arterial: 1Batimentos cardíacos: 1Oxigenação do sangue: 1Observações: 1
+Dados físicos depois da sessão: Pressão Arterial: 5Batimentos cardíacos: 5Oxigenação do sangue: 5Observações: 5

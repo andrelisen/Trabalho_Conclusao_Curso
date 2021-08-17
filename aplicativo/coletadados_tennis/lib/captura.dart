@@ -31,6 +31,9 @@ class _AceleroPage extends State<AceleroPage> {
   int _calibragemEsq;
   var _acao;
 
+  double _feDir;
+  double _feEsq;
+
   @override
   void initState() {
     super.initState();
@@ -90,10 +93,21 @@ class _AceleroPage extends State<AceleroPage> {
             //     padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
             //     child: ElevatedButton(
             //       onPressed: () async {
-            //         usandoGiroscopio();
+            //         _sendMessage("3");
             //       },
             //       // child: Text("Ligar"),
-            //       child: Text("MOVIMENTO"),
+            //       child: Text("3"),
+            //     ),
+            //   ),
+            // Container(
+            //     alignment: Alignment.center,
+            //     padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+            //     child: ElevatedButton(
+            //       onPressed: () async {
+            //         _sendMessage("6");
+            //       },
+            //       // child: Text("Ligar"),
+            //       child: Text("6"),
             //     ),
             //   ),
             //   Container(
@@ -101,10 +115,43 @@ class _AceleroPage extends State<AceleroPage> {
             //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             //     child: ElevatedButton(
             //       onPressed: () async {
-            //         _sendMessage("E");
+            //         _sendMessage("7");
             //       },
             //       // child: Text("Ligar"),
-            //       child: Text("ESQUERDA"),
+            //       child: Text("7"),
+            //     ),
+            //   ),
+            //   Container(
+            //     alignment: Alignment.center,
+            //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            //     child: ElevatedButton(
+            //       onPressed: () async {
+            //         _sendMessage("P;");
+            //       },
+            //       // child: Text("Ligar"),
+            //       child: Text("P;"),
+            //     ),
+            //   ),
+            //   Container(
+            //     alignment: Alignment.center,
+            //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            //     child: ElevatedButton(
+            //       onPressed: () async {
+            //         _sendMessage("E;3.2");
+            //       },
+            //       // child: Text("Ligar"),
+            //       child: Text("E;7.2"),
+            //     ),
+            //   ),
+            //   Container(
+            //     alignment: Alignment.center,
+            //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            //     child: ElevatedButton(
+            //       onPressed: () async {
+            //         _sendMessage("D;4.6");
+            //       },
+            //       // child: Text("Ligar"),
+            //       child: Text("D;4.6"),
             //     ),
             //   ),
             Container(
@@ -149,11 +196,11 @@ class _AceleroPage extends State<AceleroPage> {
 
   //recebe dados via bluetooth
   void _onDataReceived(Uint8List data) {
-    print("Recebendo uma mensagem do módulo!");
+    // print("Recebendo uma mensagem do módulo!");
 
     String entrada = new String.fromCharCodes(data);
 
-    print(entrada);
+    // print(entrada);
 
     //variavel receptora de valores via bluetooth
     int dadosBluetooth = int.parse(entrada);
@@ -162,19 +209,19 @@ class _AceleroPage extends State<AceleroPage> {
       //Verifica ação necessária dependendo da entrada recebida via Bluetooth
       if (dadosBluetooth == 0 || dadosBluetooth == 1) {
         //calibragem
-        print("Calibragem");
+        // print("Calibragem");
         _sendMessage("6");//emite aviso de inicio da calibragem para o jogo
         calibragemGiroscopio(dadosBluetooth);
         _acao = 1; //realizando calibragem
       }else if(dadosBluetooth == 2){
         //movimento
-        print("Movimento");
+        // print("Movimento");
         movimentoAvatarGiroscopio();
         //_sendMessage("Capturando");
         _acao = 2; //capturando movimento
       }else if (dadosBluetooth == 4) {
         //conexão estabelecida ok 
-        print("Conexão");
+        // print("Conexão");
         _acao = 3;
       }
     });
@@ -182,8 +229,9 @@ class _AceleroPage extends State<AceleroPage> {
 
   //envia dados via bluetooth
   void _sendMessage(String saida) async {
-    print("Enviando uma mensagem ao módulo!");
+    // print("Enviando uma mensagem ao módulo!");
     saida = saida.trim();
+    // print(utf8.encode(saida + "\r\n"));
     connection.output.add(utf8.encode(saida + "\r\n"));
   }
 
@@ -407,7 +455,8 @@ class _AceleroPage extends State<AceleroPage> {
         if (numVezes == 15) {
           numVezes = 1; //reinicializa numero de vezes
           _sendMessage("7"); //envia msg de conclusão da calibragem
-          giroscopio.cancel(); //cancela listen do giroscópio
+          giroscopio.cancel(); //cancela listen dLineo giroscópio
+          calculaFatorEscala();
           timer.cancel(); //cancela funçao de timer
         }
         numVezes++;
@@ -420,24 +469,56 @@ class _AceleroPage extends State<AceleroPage> {
     giroscopioMove = gyroscopeEvents.listen((GyroscopeEvent event) {
       // print(int.parse((event.z).toStringAsFixed(0)));
 
-      int valorGiroscopioAtual = int.parse((event.z).toStringAsFixed(0));
-      setState(() {
-        if(valorGiroscopioAtual >= 1 && valorGiroscopioAtual <= _calibragemEsq){
-        _sendMessage("E");
+      // int valorGiroscopioAtual = int.parse((event.z).toStringAsFixed(1));
+      double valorGiroscopioAtual = double.parse((event.z).toStringAsFixed(1));
+      // setState(() {
+        if(valorGiroscopioAtual > 0.2 && valorGiroscopioAtual <= _calibragemEsq){
+        // if(valorGiroscopioAtual >= 1 && valorGiroscopioAtual <= 8){
+          double posicao = _feEsq * valorGiroscopioAtual;
+          // double posicao = (-1.3) * valorGiroscopioAtual;
+          posicao = posicao.abs();
+          String movimento = "E" + ";" +  posicao.toStringAsFixed(1);
+          _sendMessage(movimento);
+          // _sendMessage("E");
           _direcao = "E";
-          print("E");
-        }else if(valorGiroscopioAtual >= _calibragemDir && valorGiroscopioAtual <= (-1)){
-        _sendMessage("D");
+          print(valorGiroscopioAtual);
+          print(movimento);
+          print("------------------------------------");
+        // }else if(valorGiroscopioAtual >= (-8) && valorGiroscopioAtual <= (-1)){
+        }else if(valorGiroscopioAtual >= _calibragemDir && valorGiroscopioAtual < (-0.2)){
+          double posicao = _feDir * valorGiroscopioAtual;
+          // double posicao = (1.3) * valorGiroscopioAtual;
+          posicao = posicao.abs();
+          String movimento = "D" + ";" +  posicao.toStringAsFixed(1);
+          _sendMessage(movimento);
+        // _sendMessage("D");
           _direcao = "D";
-          print("D");
-        }else if(valorGiroscopioAtual == 0){
-          _sendMessage("P");
+          print(valorGiroscopioAtual);
+          print(movimento);
+          print("------------------------------------");
+        }else if(valorGiroscopioAtual >= (-0.2) && valorGiroscopioAtual <= 0.2){
+          // _sendMessage("P;");
+          _sendMessage("P;");
           _direcao = "P";
           print("P");
+          print("------------------------------------");
         }
         giroscopioMove.cancel();
-      });
+      // });
     });
+  }
+
+  void calculaFatorEscala(){
+    //Esses valores de extrema direita e extrema esquerda são valores já conhecidos da Unity
+    int extDir = 8; //extrema direita da mesa
+    int extEsq = -8; //estrema esquerda da mesa
+    
+    _feDir = extDir / _calibragemDir.abs();
+    _feDir = double.parse((_feDir).toStringAsFixed(1));
+    _feEsq = extEsq / _calibragemEsq.abs();
+    _feEsq = double.parse((_feEsq).toStringAsFixed(1));
+    print("Fatores de escala calculados com sucesso! CAL_ESQ = $_calibragemEsq  FE_ESQ = $_feEsq CAL_DIR = $_calibragemDir FE_DIR = $_feDir");
+    
   }
 
 }

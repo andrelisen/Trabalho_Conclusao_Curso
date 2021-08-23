@@ -16,6 +16,14 @@ public class configPartida : MonoBehaviour
     public static int tempo;
     //função para verificar qual painel mostrar na tela
     //a partir da opcao de configuração da partida
+
+
+    void Start(){
+        modoConfiguracao.SetActive(true);
+        modoTempo.SetActive(false);
+        modoNiveis.SetActive(false);
+    }
+
     public void renderizaPaineisTela(int opcao){
         if(opcao == 1){
             modoConfiguracao.SetActive(false);

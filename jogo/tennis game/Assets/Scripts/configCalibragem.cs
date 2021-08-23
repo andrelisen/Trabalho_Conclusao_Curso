@@ -30,7 +30,9 @@ public class configCalibragem : MonoBehaviour
     //GameObject com o btn ao final da calibragem para ir para a configuração da partida
     public GameObject botaoSeguir;
 
-    int moveVerdade = 0;
+    //Variáveis para animar indicador de calibragem
+    int indicaCalib = 0;
+
     void Start()
     {
         string [] portasDisponiveis = SerialPort.GetPortNames(); //coleta porta serial disponivel
@@ -45,9 +47,23 @@ public class configCalibragem : MonoBehaviour
 
     void Update()
     {
+        if(indicaCalib == 1){
+            // Debug.Log("Posição x: " + iconeIndicativoDireita.transform.position.x );
+            // Debug.Log("Posição y: " + iconeIndicativoDireita.transform.position.y );
+            // Debug.Log("Posição z: " + iconeIndicativoDireita.transform.position.z );
+            if(iconeIndicativoDireita.transform.position.x >= 65f){
+                iconeIndicativoDireita.transform.position = new Vector3(0f, -21.85f, 90f);
+            }else{
+                iconeIndicativoDireita.transform.position += new Vector3(1 * 15f * Time.deltaTime, 0, 0);
+            }
+        }else if(indicaCalib == 2){
+            if(iconeIndicativoEsquerda.transform.position.x <= -65f){
+                iconeIndicativoEsquerda.transform.position = new Vector3(0f, -21.85f, 90f);
+            }else{
+                iconeIndicativoEsquerda.transform.position += new Vector3(-1 * 15f * Time.deltaTime, 0, 0);
+            }
+        }
         
-        // Debug.Log(float.Parse("3.5", CultureInfo.InvariantCulture));
-
         if(porta.IsOpen){
             try{
                 //Verifica se está sendo recebido dados 
@@ -62,6 +78,7 @@ public class configCalibragem : MonoBehaviour
                     //Debug.Log(lePorta);
                     if(lePorta == 54){ //calibragem sera iniciada 
                         if(posicaoCalibragem == 0){ //calibragem para a direita
+                            indicaCalib = 1;
                             // Debug.Log("Calibragem para a direita INICIADA!");
                             botaoInit.SetActive(false);
                             txtMover.SetActive(true);
@@ -69,6 +86,7 @@ public class configCalibragem : MonoBehaviour
                             iconeIndicativoEsquerda.SetActive(false);
                         }else if(posicaoCalibragem == 1){ //calibragem para a esquerda
                             // Debug.Log("Calibragem para a esquerda INICIADA!");
+                            indicaCalib = 2;
                             botaoInit.SetActive(false);
                             txtMover.SetActive(true);
                             iconeIndicativoDireita.SetActive(false);
@@ -82,7 +100,7 @@ public class configCalibragem : MonoBehaviour
                             txtSaidaDireita.GetComponent<Text>().text = "CALIBRAGEM PARA A DIREITA  ✓ ";
                             txtSaidaEsquerda.GetComponent<Text>().text = "CALIBRAGEM PARA A ESQUERDA  ✘ ";
                             txtInstrucao.GetComponent<Text>().text = "CALIBRAGEM PARA A ESQUERDA";
-                            txtMover.GetComponent<Text>().text = "MOVA RAPIDAMENTE O SENSOR PARA A ESQUERDA";
+                            txtMover.GetComponent<Text>().text = "REALIZE O MOVIMENTO DO SENSOR PARA A ESQUERDA E AGUARDE";
                             botaoInit.SetActive(true);
                             txtMover.SetActive(false);
                             iconeIndicativoDireita.SetActive(false);
@@ -126,7 +144,6 @@ public class configCalibragem : MonoBehaviour
                     porta.Write("1");
                 }else if(opcao == 2){
                     porta.Write("2");
-                    moveVerdade = 1;
                 }
             }catch(System.Exception){
                 throw;

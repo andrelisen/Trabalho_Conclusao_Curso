@@ -30,10 +30,10 @@ public class controllGame : MonoBehaviour
                     tempoDecorrido += Time.deltaTime; 
                     Player.flagDificuldade = false; //config. partida para ser fácil
                     Bot.flagDificuldade = false; //config. bot para ser fácil
-                    Bot.speed = 9.5f;
-                    Bot.force = 10f;
+                    Bot.speed = 8f;
+                    Bot.force = 12f;
                     if(tempoDecorrido >= tempoPartida){
-                        Time.timeScale = 0;
+                        // Time.timeScale = 0;
                         // comunicBluetooth.porta.Close();
                         UnityEngine.SceneManagement.SceneManager.LoadScene("sceneFimPartida");
                     }
@@ -42,10 +42,10 @@ public class controllGame : MonoBehaviour
                     //A velocidade do bot é 9.5f, força exercida é 10f e o num. de acertos é 5 acertos(bot ou paciente)
                     Player.flagDificuldade = false;
                     Bot.flagDificuldade = false;
-                    Bot.speed = 9.5f;
-                    Bot.force = 10f;
+                    Bot.speed = 8f;
+                    Bot.force = 12f;
                     if(Ball.playerScore == 5 || Ball.botScore == 5){
-                        Time.timeScale = 0;
+                        // Time.timeScale = 0;
                         // comunicBluetooth.porta.Close();
                         UnityEngine.SceneManagement.SceneManager.LoadScene("sceneFimPartida");
                     }
@@ -57,7 +57,7 @@ public class controllGame : MonoBehaviour
                     Bot.speed = 12.5f;
                     Bot.force = 12f;
                     if(Ball.playerScore == 8 || Ball.botScore == 8){
-                        Time.timeScale = 0;
+                        // Time.timeScale = 0;
                         // comunicBluetooth.porta.Close();
                         UnityEngine.SceneManagement.SceneManager.LoadScene("sceneFimPartida");
                     }
@@ -70,7 +70,7 @@ public class controllGame : MonoBehaviour
                     Bot.speed = 25f;
                     Bot.force = 15f;
                     if(Ball.playerScore == 13 || Ball.botScore == 13){
-                        Time.timeScale = 0;
+                        // Time.timeScale = 0;
                         // comunicBluetooth.porta.Close();
                         UnityEngine.SceneManagement.SceneManager.LoadScene("sceneFimPartida");
                     }

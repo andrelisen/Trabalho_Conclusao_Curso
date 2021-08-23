@@ -10,7 +10,10 @@ public class coletaDadosFisioterapeuta : MonoBehaviour
     
     //Função para salvar dados do fisioterapeuta
     public void SalvarFisioterapeuta(){
-        dadosJogo.nomeFisioterapeuta = nomeFisioterapeuta.GetComponent<Text>().text;
+        // dadosJogo.nomeFisioterapeuta = nomeFisioterapeuta.GetComponent<Text>().text;
+        string escrita = "Log data:" + System.DateTime.Now + "\n";
+        escrita = escrita + "Fisioterapeuta: " + nomeFisioterapeuta.GetComponent<Text>().text;
+        dadosJogo.Salvar(escrita);
     }
 
 }

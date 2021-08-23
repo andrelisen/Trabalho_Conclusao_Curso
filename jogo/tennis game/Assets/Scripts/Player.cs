@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
 {
     public Transform aimTarget; //alvo para onde a bolinha será lançada para o lado do bot
     
-    float speed = 15.0f; //velocidade da raquete que será multiplicada pela posição
+    float speed = 15f; //velocidade da raquete que será multiplicada pela posição - 15 - 0.125f - 0.5f
     float force = 15; //15
     
     bool hitting;
@@ -31,12 +31,9 @@ public class Player : MonoBehaviour
 
     public static int numAcertos;
 
-    public static float acelMedia;
-    public static int numLeitura;
-    public static float tempoDecorrido;
-
     float deslocamentoAnterior = -1.0f;
-    int testeSBlue;
+
+   
     void Start()
     {
         //playerRb = this.GetComponent<Rigidbody>();
@@ -46,15 +43,17 @@ public class Player : MonoBehaviour
         // porta.ReadTimeout = -1; //InfiniteTimeout = -1
         // porta.DiscardInBuffer();
         transform.position = new Vector3(43.04f, -12.91f, 0.0f);
+        numAcertos = 0;
     }
 
-    void FixedUpdate()
+    // void FixedUpdate()
+    void Update()
     {
         if(configCalibragem.porta.IsOpen){
             try{
                  if(configCalibragem.porta.BytesToRead == 0){ //Não está sendo recebido dados no buffer
                      //Debug.Log(porta.BytesToRead);
-                      Debug.Log("Sem recebimento de dados B!");
+                    //   Debug.Log("Sem recebimento de dados B!");
                  }else{
                     //Trecho comentado que funciona apenas quando enviado APENAS UM BYTE
                     // int dadoNoSensor = configCalibragem.porta.ReadByte();
@@ -67,8 +66,8 @@ public class Player : MonoBehaviour
                     configCalibragem.porta.Write("2");
                     configCalibragem.porta.DiscardOutBuffer();
 
-                    Debug.Log("Valor recebido: " + dadoNoSensor);
-                    Debug.Log("Tamanho: " + dadoNoSensor.Length);
+                    // Debug.Log("Valor recebido: " + dadoNoSensor);
+                    // Debug.Log("Tamanho: " + dadoNoSensor.Length);
 
                     //verifica se não houve um erro de leitura do buffer e leu vazio
                     if(dadoNoSensor != "" && (dadoNoSensor.Length == 4 || dadoNoSensor.Length == 7)){
@@ -95,7 +94,7 @@ public class Player : MonoBehaviour
                         // Debug.Log("Posição atual do avatar em z é igual a: " + z);
                         
                         if(deslocamentoAnterior == posicao){
-                            Debug.Log("Valor repetido recebido!");
+                            // Debug.Log("Valor repetido recebido!");
                         }else{
 
                             float deslocamento = 0.0f;
@@ -121,22 +120,23 @@ public class Player : MonoBehaviour
 
                             if(direcao == "D"){
                                 while(andandoMesa < deslocamento && transform.position.z <= 8f){
-                                    transform.position += new Vector3(0, 0, 1 * speed * Time.deltaTime);
                                     // Debug.Log(1 * speed * Time.deltaTime);
+                                    transform.position += new Vector3(0, 0, 1 * speed * Time.deltaTime);
                                     andandoMesa += (1 * speed * Time.deltaTime); 
                                 }
                             }else if(direcao == "E"){
                                 while(andandoMesa < deslocamento && transform.position.z >= (-8f)){
-                                    transform.position += new Vector3(0, 0, -1 * speed * Time.deltaTime);
                                     // Debug.Log(-1 * speed * Time.deltaTime);
-                                    andandoMesa += (1 * speed * Time.deltaTime);
+                                    transform.position += new Vector3(0, 0, -1 * speed * Time.deltaTime);
+                                    andandoMesa += (1 * speed * Time.deltaTime); 
                                 }
                             }else if(direcao == "P"){
-                                transform.position += new Vector3(0, 0, 0);
+                                // transform.position += new Vector3(0, 0, 0);
                             }
                         }
 
                     }
+                
 
                 //     //Trecho de código que funciona apenas com UM BYTE - somente D, E, P sem valores de deslocamento
 
@@ -160,54 +160,11 @@ public class Player : MonoBehaviour
                  throw;
              }
          }    
-    }
-
-    //função para mover o avatar usando como entrada de dados o nó sensor
-    void moveAvatar(string direcao, float posicao){
-
-        float z = transform.position.z;
-        // Debug.Log("Posição atual do avatar em z é igual a: " + z);
-
-        float deslocamento = 0.0f;
-
-        if(z == 0 || (z > -1 && z < 1)){
-            deslocamento = z + posicao;
-        }else if(posicao > z){
-            deslocamento = posicao - z;
-        }else if(z > posicao){
-            deslocamento = z - posicao;
-        }
-
-        // Debug.Log("Nova posição igual a: " + deslocamento);
-
-        //Faz o módulo do deslocamento para realizar corretamente a movimentação no eixo z
-        if(deslocamento < 0){
-            deslocamento = deslocamento * (-1.0f);
-        }
-
-        float andandoMesa = 0.0f;
-
-        if(direcao == "D"){
-            while(andandoMesa <= deslocamento){
-                transform.position += new Vector3(0, 0, 1 * speed * Time.deltaTime);
-                Debug.Log(1 * speed * Time.deltaTime);
-                andandoMesa += (1 * speed * Time.deltaTime); 
-            }
-        }else if(direcao == "E"){
-            while(andandoMesa <= deslocamento){
-                transform.position += new Vector3(0, 0, -1 * speed * Time.deltaTime);
-                Debug.Log(-1 * speed * Time.deltaTime);
-                andandoMesa += (1 * speed * Time.deltaTime);
-            }
-        }else if(direcao == "P"){
-            transform.position += new Vector3(0, 0, 0);
-        }
-        
+        // movimentaUsandoTeclado();
     }
 
     //função para mover o avatar usando como entrada de dados o teclado
     void movimentaUsandoTeclado(){
-
         
         //capturar posição se pra frente, pra trás, pra direita ou pra esquerda
         float h = Input.GetAxisRaw("Horizontal"); //direita = 1 esquerda = -1
@@ -219,17 +176,17 @@ public class Player : MonoBehaviour
             // playerRb.velocity = new Vector3(0, 0, h) * speed;
             // Debug.Log(Time.deltaTime);
             if(h == 1f){ //direita
-                Debug.Log("Posição Atual D = ");
-                Debug.Log(transform.position.z);
+                // Debug.Log("Posição Atual D = ");
+                // Debug.Log(transform.position.z);
                 transform.position += new Vector3(0, 0, 1 * speed * Time.deltaTime); //Time.deltatime = fazer o movimento c/ velocidade constante - retorna 0.02
-                Debug.Log("Posição Depois D = ");
-                Debug.Log(transform.position.z);
+                // Debug.Log("Posição Depois D = ");
+                // Debug.Log(transform.position.z);
             }else{ //esquerda
-                Debug.Log("Posição Atual E = ");
-                Debug.Log(transform.position.z);
+                // Debug.Log("Posição Atual E = ");
+                // Debug.Log(transform.position.z);
                 transform.position += new Vector3(0, 0, -1 * speed * Time.deltaTime);
-                Debug.Log("Posição Depois E = ");
-                Debug.Log(transform.position.z);
+                // Debug.Log("Posição Depois E = ");
+                // Debug.Log(transform.position.z);
             }
         }
     }
@@ -261,6 +218,7 @@ public class Player : MonoBehaviour
 
             ball.GetComponent<Ball>().hitter = "player"; //modificando uma var. publica da class ball
             ball.GetComponent<Ball>().playing = true;
+            // Ball.numRebates++;
         }
     }
 

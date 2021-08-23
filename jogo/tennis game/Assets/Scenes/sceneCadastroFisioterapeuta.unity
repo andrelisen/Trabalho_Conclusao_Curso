@@ -403,7 +403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49207109744e43a27b807815a86e8cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nomeFisioterapeuta: {fileID: 586033647}
+  nomeFisioterapeuta: {fileID: 1285212045}
 --- !u!4 &629361091
 Transform:
   m_ObjectHideFlags: 0

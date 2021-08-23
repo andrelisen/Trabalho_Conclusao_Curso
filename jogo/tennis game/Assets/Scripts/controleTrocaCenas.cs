@@ -20,4 +20,8 @@ public class controleTrocaCenas : MonoBehaviour
             UnityEngine.SceneManagement.SceneManager.LoadScene("sceneConfigPartida");
         }
     }
+
+    public void CarregaConfigPartida(){
+        UnityEngine.SceneManagement.SceneManager.LoadScene("sceneConfigPartida");
+    }
 }

@@ -1,0 +1,12 @@
+Log data:22/08/2021 20:56:26
+Fisioterapeuta: Andrelise
+Paciente: TesteIdade: 22Nível da amputação: SuperiorSexo: Feminino
+ANTES: 
+ Pressão Arterial: 0Batimentos Cardiacos: 0Oxigenação do Sangue: 0Observações: 0
+Log data:22/08/2021 21:05:57
+Fisioterapeuta: Andrelise
+Paciente: Teste; Idade: 22; Nível da amputação: Superior; Sexo: Feminino
+ANTES: 
+ Pressão Arterial: 0; Batimentos Cardiacos: 0; Oxigenação do Sangue: 0; Observações: 0
+DEPOIS: 
+ Pressão Arterial: 5; Batimentos Cardiacos: 5; Oxigenação do Sangue: 5; Observações: 5

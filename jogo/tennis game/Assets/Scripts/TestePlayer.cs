@@ -20,7 +20,10 @@ public class TestePlayer : MonoBehaviour
 
     void FixedUpdate()
     {
-        
+        // transform.position = Vector3.Lerp(transform.position, new Vector3(43.04f, -12.91f, 7.5f), Time.deltaTime);
+        while(transform.position.z <= 7.5f){
+            transform.position = Vector3.Lerp(transform.position, new Vector3(43.04f, -12.91f, 7.5f), Time.deltaTime);
+        }
     }
 
     //função para mover o avatar usando como entrada de dados o teclado

@@ -417,7 +417,7 @@ class _AceleroPage extends State<AceleroPage> {
             _calibragemDir = valorDireitaMax;
           });
         });
-
+        // _sendMessage("D");
         //Cancela função aos 15 segundos
         if (numVezes == 15) {
           numVezes = 1; //reinicializa numero de vezes
@@ -450,7 +450,7 @@ class _AceleroPage extends State<AceleroPage> {
             _calibragemEsq = valorEsquerdaMax;
           });
         });
-
+        // _sendMessage("E");
         //Cancela função aos 15 segundos
         if (numVezes == 15) {
           numVezes = 1; //reinicializa numero de vezes

@@ -13,6 +13,7 @@ public class Ball : MonoBehaviour
     public static int botScore;
 
     public static int numErros;
+    public static int numRebates;
 
     [SerializeField] Text playerScoreText;
     [SerializeField] Text botScoreText;
@@ -24,6 +25,8 @@ public class Ball : MonoBehaviour
         initialPos = transform.position;
         playerScore = 0;
         botScore = 0;
+        numRebates = 0;
+        numErros = 0;
     }
 
     // Update is called once per frame
@@ -75,6 +78,7 @@ public class Ball : MonoBehaviour
                 playerScore++;
             }else if(hitter == "bot"){
                 botScore++;
+                numErros++;
             }
             playing = false;
             UpdateScores();

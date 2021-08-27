@@ -24,6 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/sceneConfigPartida.unity
     guid: e935e1fbb42734935a72e438155dfde6
   - enabled: 1
+    path: Assets/Scenes/sceneDemo.unity
+    guid: 683939bbfeec0db58866fd3e04f15d56
+  - enabled: 1
     path: Assets/Scenes/sceneJogo.unity
     guid: c504594d280de67339385f81af1e28cf
   - enabled: 1

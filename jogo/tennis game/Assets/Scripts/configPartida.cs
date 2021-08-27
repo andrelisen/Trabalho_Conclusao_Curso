@@ -22,6 +22,10 @@ public class configPartida : MonoBehaviour
         modoConfiguracao.SetActive(true);
         modoTempo.SetActive(false);
         modoNiveis.SetActive(false);
+        controllGame.modalidadeJogo = -1;
+        Ball.playerScore = 0;
+        Ball.botScore = 0;
+        controllGame.tempoDecorrido = 0.0f;
     }
 
     public void renderizaPaineisTela(int opcao){

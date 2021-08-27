@@ -1,12 +1,195 @@
-Log data:22/08/2021 20:56:26
-Fisioterapeuta: Andrelise
-Paciente: TesteIdade: 22Nível da amputação: SuperiorSexo: Feminino
-ANTES: 
- Pressão Arterial: 0Batimentos Cardiacos: 0Oxigenação do Sangue: 0Observações: 0
-Log data:22/08/2021 21:05:57
-Fisioterapeuta: Andrelise
-Paciente: Teste; Idade: 22; Nível da amputação: Superior; Sexo: Feminino
-ANTES: 
- Pressão Arterial: 0; Batimentos Cardiacos: 0; Oxigenação do Sangue: 0; Observações: 0
-DEPOIS: 
- Pressão Arterial: 5; Batimentos Cardiacos: 5; Oxigenação do Sangue: 5; Observações: 5
+$
+25/08/2021 18:57:06
+Andrelise 
+Carlos
+22
+Inferior
+Feminino
+#
+A
+0
+0
+0
+0
+##
+P 
+7,8
+30
+25
+5 
+83,33
+tempo
+1,000024 min
+*
+P
+5,4
+20
+16
+2
+80,00
+nível fácil
+2,001375 min
+*
+###
+D
+0
+0
+0
+0
+####
+$
+26/08/2021 20:00:00
+Ana 
+Fernando
+22
+Inferior
+Feminino
+#
+A
+0
+0
+0
+0
+##
+P 
+7,8
+30
+25
+5 
+83,33
+tempo
+1,000024 min
+*
+P
+5,4
+20
+16
+2
+80,00
+nível fácil
+2,001375 min
+*
+###
+D
+0
+0
+0
+0
+####
+$
+27/08/2021 00:57:06
+Paula 
+Denise
+22
+Inferior
+Feminino
+#
+A
+0
+0
+0
+0
+##
+P 
+7,8
+30
+25
+5 
+83,33
+tempo
+1,000024 min
+*
+P
+5,4
+20
+16
+2
+80,00
+nível fácil
+2,001375 min
+*
+###
+D
+0
+0
+0
+0
+####
+$
+27/08/2021 14:57:06
+Neiva 
+João
+22
+Inferior
+Feminino
+#
+A
+0
+0
+0
+0
+##
+P 
+7,8
+30
+25
+5 
+83,33
+tempo
+1,000024 min
+*
+P
+5,4
+20
+16
+2
+80,00
+nível fácil
+2,001375 min
+*
+###
+D
+0
+0
+0
+0
+####
+$
+27/08/2021 14:57:06
+Andrelise 
+Aline
+22
+Inferior
+Feminino
+#
+A
+0
+0
+0
+0
+##
+P 
+7,8
+30
+25
+5 
+83,33
+tempo
+1,000024 min
+*
+P
+5,4
+20
+16
+2
+80,00
+nível fácil
+2,001375 min
+*
+###
+D
+0
+0
+0
+0
+####

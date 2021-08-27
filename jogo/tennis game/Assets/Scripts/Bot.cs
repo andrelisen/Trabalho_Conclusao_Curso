@@ -80,7 +80,7 @@ public class Bot : MonoBehaviour
             }else{
                 dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
             }
-            other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0);
+            other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0); //6
             Vector3 ballDir = ball.position - transform.position;
             ball.GetComponent<Ball>().hitter = "bot";
             ball.GetComponent<Ball>().playing = true;

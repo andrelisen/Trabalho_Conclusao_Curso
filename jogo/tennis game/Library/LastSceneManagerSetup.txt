@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/sceneInicial.unity
+- path: Assets/Scenes/sceneLoginFisioterapeuta.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

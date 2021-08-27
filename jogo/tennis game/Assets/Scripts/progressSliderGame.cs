@@ -53,7 +53,6 @@ public class progressSliderGame : MonoBehaviour
                 }catch(System.Exception){
                     throw;
                 }
-
             }
         }
     }

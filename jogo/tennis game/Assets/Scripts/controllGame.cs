@@ -15,7 +15,7 @@ public class controllGame : MonoBehaviour
     //variavel responsavel pela coleta do tempo da partida configurado pelo fisioterapeuta
     int tempoPartida;
     //variavel que realiza o calculo da partida durante a execução da configuração de partida por tempo
-    float tempoDecorrido;
+    public static float tempoDecorrido;
 
     void Update()
     {

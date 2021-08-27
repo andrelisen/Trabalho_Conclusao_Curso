@@ -52,13 +52,13 @@ public class configCalibragem : MonoBehaviour
             // Debug.Log("Posição y: " + iconeIndicativoDireita.transform.position.y );
             // Debug.Log("Posição z: " + iconeIndicativoDireita.transform.position.z );
             if(iconeIndicativoDireita.transform.position.x >= 65f){
-                iconeIndicativoDireita.transform.position = new Vector3(0f, -21.85f, 90f);
+                iconeIndicativoDireita.transform.position = new Vector3(65f, -21.85f, 90f);
             }else{
                 iconeIndicativoDireita.transform.position += new Vector3(1 * 15f * Time.deltaTime, 0, 0);
             }
         }else if(indicaCalib == 2){
             if(iconeIndicativoEsquerda.transform.position.x <= -65f){
-                iconeIndicativoEsquerda.transform.position = new Vector3(0f, -21.85f, 90f);
+                iconeIndicativoEsquerda.transform.position = new Vector3(-65f, -21.85f, 90f);
             }else{
                 iconeIndicativoEsquerda.transform.position += new Vector3(-1 * 15f * Time.deltaTime, 0, 0);
             }
@@ -99,8 +99,8 @@ public class configCalibragem : MonoBehaviour
                             // Debug.Log("Calibragem para a direita CONCLUIDA!");
                             txtSaidaDireita.GetComponent<Text>().text = "CALIBRAGEM PARA A DIREITA  ✓ ";
                             txtSaidaEsquerda.GetComponent<Text>().text = "CALIBRAGEM PARA A ESQUERDA  ✘ ";
-                            txtInstrucao.GetComponent<Text>().text = "CALIBRAGEM PARA A ESQUERDA";
-                            txtMover.GetComponent<Text>().text = "REALIZE O MOVIMENTO DO SENSOR PARA A ESQUERDA E AGUARDE";
+                            txtInstrucao.GetComponent<Text>().text = "PARA A ESQUERDA";
+                            txtMover.GetComponent<Text>().text = "REALIZE O MOVIMENTO DO SENSOR PARA A ESQUERDA";
                             botaoInit.SetActive(true);
                             txtMover.SetActive(false);
                             iconeIndicativoDireita.SetActive(false);
@@ -114,6 +114,47 @@ public class configCalibragem : MonoBehaviour
                             txtMover.SetActive(false);
                             iconeIndicativoDireita.SetActive(false);
                             iconeIndicativoEsquerda.SetActive(false);
+                        }
+                    }else if(lePorta == 65){//movimento válido
+                        if(posicaoCalibragem == 0){ //calibragem para a direita
+                            // indicaCalib = 1;
+                            // Debug.Log("Calibragem para a direita INICIADA!");
+                            botaoInit.SetActive(false);
+                            txtMover.GetComponent<Text>().text = "AGUARDE...";
+                            iconeIndicativoDireita.SetActive(true);
+                            iconeIndicativoEsquerda.SetActive(false);
+                        }else if(posicaoCalibragem == 1){ //calibragem para a esquerda
+                            // Debug.Log("Calibragem para a esquerda INICIADA!");
+                            // indicaCalib = 2;
+                            botaoInit.SetActive(false);
+                            txtMover.GetComponent<Text>().text = "AGUARDE...";
+                            // txtMover.SetActive(true);
+                            iconeIndicativoDireita.SetActive(false);
+                            iconeIndicativoEsquerda.SetActive(true);
+                        }
+                    }else if(lePorta == 57){ //repetir movimento
+                        if(posicaoCalibragem == 0){ //calibragem para a direita
+                            indicaCalib = 1;
+                            // Debug.Log("Calibragem para a direita INICIADA!");
+                            txtInstrucao.GetComponent<Text>().text = "REFAÇA A CALIBRAGEM - DIREITA";
+                            botaoInit.SetActive(true);
+                            // txtMover.GetComponent<Text>().text = "REFAÇA A CALIBRAGEM";
+                            txtMover.SetActive(false);
+                            iconeIndicativoDireita.SetActive(false);
+                            iconeIndicativoEsquerda.SetActive(false);
+                            posicaoCalibragem = -1;
+                            iconeIndicativoDireita.transform.position = new Vector3(0f, -21.85f, 90f);
+                        }else if(posicaoCalibragem == 1){ //calibragem para a esquerda
+                            // Debug.Log("Calibragem para a esquerda INICIADA!");
+                            indicaCalib = 2;
+                            txtInstrucao.GetComponent<Text>().text = "REFAÇA A CALIBRAGEM - ESQUERDA";
+                            botaoInit.SetActive(true);
+                            // txtMover.GetComponent<Text>().text = "REFAÇA A CALIBRAGEM";
+                            txtMover.SetActive(false);
+                            iconeIndicativoDireita.SetActive(false);
+                            iconeIndicativoEsquerda.SetActive(false);
+                            posicaoCalibragem = 0;
+                            iconeIndicativoEsquerda.transform.position = new Vector3(0f, -21.85f, 90f);
                         }
                     }
 

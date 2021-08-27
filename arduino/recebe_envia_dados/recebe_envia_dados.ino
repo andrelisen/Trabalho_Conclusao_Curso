@@ -39,6 +39,10 @@ void loop() {
         Serial.write("6");
       }else if(leituraBuffer == "7\r"){
         Serial.write("7");
+      }else if(leituraBuffer == "9\r"){
+        Serial.write("9");
+      }else if(leituraBuffer == "A\r"){
+        Serial.write("A");
       }
     }else if(tamanhoString == 3){
       Serial.write("P;\n");

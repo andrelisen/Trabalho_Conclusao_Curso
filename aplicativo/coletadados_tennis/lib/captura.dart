@@ -393,72 +393,96 @@ class _AceleroPage extends State<AceleroPage> {
     //await Future.delayed(const Duration(seconds: 15), () {
     //  print("Delay da calibragem executado!");
     //});
-    //condição para a calibragem da extrema direita
+    
+    // //condição para a calibragem da extrema direita
     if (extremo == 0) {
 
       //variavel de controle do num. de vezes da execução da função timer
       int numVezes = 1;
+      //cria variavel do tipo stream para controle do listen
+      final giroscopio = gyroscopeEvents.listen(null);
+
       //Função que executa a a cada 1 segundo
       Timer.periodic(Duration(seconds: 1), (Timer timer) {
-        print("DIREITA - Segundos correntes: $numVezes");
-        var giroscopio;
-        giroscopio = gyroscopeEvents.listen((GyroscopeEvent event) {
+        giroscopio.onData((data) {
           setState(() {
-            var giro = int.parse((event.z).toStringAsFixed(0));
+            var giro = int.parse((data.z).toStringAsFixed(0));
+            print("Giro Dir = $giro");
             if (giro == 0) {
               //print("Zero!");
             } else if (giro < valorDireitaMax) {
-              valorDireitaMax = giro;
-              //print(acel);
-            } else if (giro.abs() < valorDireitaMax) {
-              //print(valorDireitaMax);
-            }
-            //_calibragemDir = valorDireitaMax.toString();
-            _calibragemDir = valorDireitaMax;
+                  valorDireitaMax = giro;
+                  // print("Valor máximo da direita é: $valorDireitaMax");
+                  //print(acel);
+                  _sendMessage("A");
+                  _calibragemDir = valorDireitaMax;
+                } else if (giro.abs() < valorDireitaMax) {
+                  //print(valorDireitaMax); 
+                }
+                //_calibragemDir = valorDireitaMax.toString();
+                  // // Cancela função aos 7 segundos
+                if (numVezes == 7) {
+                  print("Tempo finalizado!");
+                  // print(DateTime.now().second);
+                  numVezes = 1; //reinicializa numero de vezes
+                    if(_calibragemDir == 0 || _calibragemDir == null){ //necessário repetir calibragem
+                      _sendMessage("9");
+                      timer.cancel(); //cancela funçao de timer
+                      giroscopio.pause(); //cancela listen do giroscópio
+                    }else{//calibragem ok
+                      _sendMessage("7"); //envia msg de conclusão da calibragem
+                      timer.cancel(); //cancela funçao de timer
+                      giroscopio.pause(); //cancela listen do giroscópio
+                    }
+                }
           });
-        });
-        // _sendMessage("D");
-        //Cancela função aos 15 segundos
-        if (numVezes == 15) {
-          numVezes = 1; //reinicializa numero de vezes
-          _sendMessage("7"); //envia msg de conclusão da calibragem
-          giroscopio.cancel(); //cancela listen do giroscópio
-          timer.cancel(); //cancela funçao de timer
-        }
+        }); 
         numVezes++;
       });
     } else if (extremo == 1) {
       //calibragem da extrema esquerda
       //variavel de controle do num. de vezes da execução da função timer
       int numVezes = 1;
+
+      final giroscopio = gyroscopeEvents.listen(null);
+
       //Função que executa a a cada 1 segundo
       Timer.periodic(Duration(seconds: 1), (Timer timer) {
-        print("ESQUERDA - Segundos correntes: $numVezes");
-        var giroscopio;
-        giroscopio = gyroscopeEvents.listen((GyroscopeEvent event) {
+        // print("ESQUERDA - Segundos correntes: $numVezes");
+        // var giroscopio;
+        giroscopio.onData((data) {
           setState(() {
-            var giro = int.parse((event.x).toStringAsFixed(0));
+            var giro = int.parse((data.z).toStringAsFixed(0));
+            print("Giro Esq = $giro");
             if (giro == 0) {
               //print("Zero!");
             } else if (giro > valorEsquerdaMax) {
               valorEsquerdaMax = giro;
-              //print(acel);
+              // print("Valor máximo da esquerda é: $valorEsquerdaMax");
+              _sendMessage("A");
+              _calibragemEsq = valorEsquerdaMax;
             } else if (giro.abs() < valorEsquerdaMax) {
               //print(valorDireitaMax);
             }
             //_calibragemEsq = valorEsquerdaMax.toString();
-            _calibragemEsq = valorEsquerdaMax;
+            //Cancela função aos 7 segundos
+            if (numVezes == 7) {
+              print("Tempo finalizado");
+              numVezes = 1; //reinicializa numero de vezes
+              if(_calibragemEsq == 0 || _calibragemEsq == null){ //necessário repetir calibragem
+                _sendMessage("9");
+                timer.cancel(); //cancela funçao de timer
+                giroscopio.pause();
+              }else{
+                _sendMessage("7"); //envia msg de conclusão da calibragem
+                timer.cancel(); //cancela funçao de timer
+                giroscopio.pause(); //cancela listen dLineo giroscópio
+                calculaFatorEscala();
+              }
+            }
           });
         });
         // _sendMessage("E");
-        //Cancela função aos 15 segundos
-        if (numVezes == 15) {
-          numVezes = 1; //reinicializa numero de vezes
-          _sendMessage("7"); //envia msg de conclusão da calibragem
-          giroscopio.cancel(); //cancela listen dLineo giroscópio
-          calculaFatorEscala();
-          timer.cancel(); //cancela funçao de timer
-        }
         numVezes++;
       });
     }

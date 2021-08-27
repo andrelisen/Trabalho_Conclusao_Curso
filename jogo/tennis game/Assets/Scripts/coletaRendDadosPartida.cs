@@ -33,6 +33,8 @@ public class coletaRendDadosPartida : MonoBehaviour
 
             string escrita;
 
+            escrita = "P\n";
+
             placarPlayer.GetComponent<Text>().text = (Ball.playerScore).ToString();
             placarBot.GetComponent<Text>().text = (Ball.botScore).ToString();
 
@@ -43,10 +45,10 @@ public class coletaRendDadosPartida : MonoBehaviour
             }
 
 
-            numTotalRebates.GetComponent<Text>().text = "Total de rebates: " + (Ball.numRebates).ToString();
+            numTotalRebates.GetComponent<Text>().text = (Ball.numRebates).ToString();
 
-            numAcertos.GetComponent<Text>().text = "Número de acertos: " + (Player.numAcertos).ToString();
-            numErros.GetComponent<Text>().text = "Número de erros: " +  (Ball.numErros).ToString();
+            numAcertos.GetComponent<Text>().text = (Player.numAcertos).ToString();
+            numErros.GetComponent<Text>().text = (Ball.numErros).ToString();
 
             int a = Player.numAcertos;
             int r = Ball.numRebates;
@@ -56,27 +58,27 @@ public class coletaRendDadosPartida : MonoBehaviour
             aproveitamentoAcertos = aproveitamentoAcertos * 100;
 
             Debug.Log("Aproveitamento: " + aproveitamentoAcertos);
-            aproveitamento.GetComponent<Text>().text = "Aproveitamento: " + aproveitamentoAcertos.ToString("F") + "%";
+            aproveitamento.GetComponent<Text>().text = aproveitamentoAcertos.ToString("F") + "%";
             
             
-            escrita = "Placar da partida: PACIENTE = " + (Ball.playerScore).ToString() + "| BOT = " + (Ball.botScore).ToString() + " Total de rebates: " + (Ball.numRebates).ToString() + " Número de acertos: " + (Player.numAcertos).ToString() + " Número de erros: " +  (Ball.numErros).ToString() + " Aproveitamento: " + aproveitamentoAcertos.ToString("F") + "%";
+            escrita = escrita + (Ball.playerScore).ToString() + "," + (Ball.botScore).ToString() + "\n" + (Ball.numRebates).ToString() + "\n" + (Player.numAcertos).ToString() + "\n" +  (Ball.numErros).ToString() + "\n" + aproveitamentoAcertos.ToString("F") + "\n";
             
             switch(controllGame.modalidadeJogo){
                 case 1: //tempo
-                    modoPartida.GetComponent<Text>().text = "Modo da partida: tempo";
-                    escrita = escrita + " Modo da partida: tempo";
+                    modoPartida.GetComponent<Text>().text = "tempo";
+                    escrita = escrita + "tempo\n";
                     break;
                 case 2: //fácil 
-                    modoPartida.GetComponent<Text>().text = "Modo da partida: nível fácil";
-                    escrita = escrita + " Modo da partida: nível fácil";
+                    modoPartida.GetComponent<Text>().text = "nível fácil";
+                    escrita = escrita + "nível fácil\n";
                     break;
                 case 3: //médio
-                    modoPartida.GetComponent<Text>().text = "Modo da partida: nível médio";
-                    escrita = escrita + " Modo da partida: nível médio";
+                    modoPartida.GetComponent<Text>().text = "nível médio";
+                    escrita = escrita + "nível médio\n";
                     break;
                 case 4: //difícil
-                    modoPartida.GetComponent<Text>().text = "Modo da partida: nível difícil";
-                    escrita = escrita + " Modo da partida: nível difícil";
+                    modoPartida.GetComponent<Text>().text = "nível difícil";
+                    escrita = escrita + "nível difícil\n";
                     break;
             }
 
@@ -84,16 +86,16 @@ public class coletaRendDadosPartida : MonoBehaviour
             if(tempoDurantePartida > 60f){
                 float min = tempoDurantePartida/60;
                 Debug.Log("Tempo decorrido é de " + min + "min");
-                duracaoPartida.GetComponent<Text>().text = "Duração da partida: " + (min).ToString() + " min";
-                escrita = escrita + " Duração da partida: " + (min).ToString() + " min";
+                duracaoPartida.GetComponent<Text>().text = (min).ToString() + " min";
+                escrita = escrita + (min).ToString() + "min\n*";
             }else if(tempoDurantePartida == 60f){
                 Debug.Log("Tempo decorrido é de 1 minuto");
-                duracaoPartida.GetComponent<Text>().text = "Duração da partida: 1 min";
-                escrita = escrita + " Duração da partida: 1 min";
+                duracaoPartida.GetComponent<Text>().text = "1 min";
+                escrita = escrita + "1 min\n*";
             }else if(tempoDurantePartida < 60f){
                 Debug.Log("Tempo decorrido é de " + tempoDurantePartida + "seg");
-                duracaoPartida.GetComponent<Text>().text = "Duração da partida: " + (tempoDurantePartida).ToString() + "seg";
-                escrita = escrita + " Duração da partida: " + (tempoDurantePartida).ToString() + " seg";
+                duracaoPartida.GetComponent<Text>().text = (tempoDurantePartida).ToString() + "seg";
+                escrita = escrita + (tempoDurantePartida).ToString() + "seg\n*";
             }
             
             dadosJogo.Salvar(escrita);

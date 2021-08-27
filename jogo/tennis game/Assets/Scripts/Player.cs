@@ -12,8 +12,7 @@ public class Player : MonoBehaviour
     public Transform aimTarget; //alvo para onde a bolinha será lançada para o lado do bot
     
     float speed = 15f; //velocidade da raquete que será multiplicada pela posição - 15 - 0.125f - 0.5f
-    float force = 15; //15
-    
+    float force = 25; //15
     bool hitting;
 
     public Transform ball;
@@ -211,7 +210,7 @@ public class Player : MonoBehaviour
                 //movimentando target usando aleatoriedade
                 dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
             }
-            other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6, 0); //bolinha
+            other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6.5f, 0); //bolinha - 6
 
             Vector3 ballDir = ball.position - transform.position;
             aimTarget.position = aimTargetPosition;

@@ -33,7 +33,7 @@ public class coletaDadosPaciente : MonoBehaviour
         // Debug.Log(opcoes.GetComponentInChildren<Text>().text);
         // dadosJogo.sexo = opcoes.GetComponentInChildren<Text>().text;
 
-        escrita = "Paciente: " + nomePaciente.GetComponent<Text>().text + "; Idade: " + idade.GetComponent<Text>().text + "; Nível da amputação: " + amputacoes.GetComponentInChildren<Text>().text + "; Sexo: " + opcoes.GetComponentInChildren<Text>().text;
+        escrita = nomePaciente.GetComponent<Text>().text + "\n" + idade.GetComponent<Text>().text + "\n" + amputacoes.GetComponentInChildren<Text>().text + "\n" + opcoes.GetComponentInChildren<Text>().text;
 
         dadosJogo.Salvar(escrita);
 

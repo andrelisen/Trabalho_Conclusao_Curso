@@ -17,6 +17,9 @@ public class coletaDadosPaciente : MonoBehaviour
 
     //Função para salvar os dados do paciente 
     public void SalvarDadosPaciente(){
+
+        listaPacientes.nomePaciente = nomePaciente.GetComponent<Text>().text;
+
         string escrita;
         coletaDadosFisicos.opcao = 1;
         // dadosJogo.nomePaciente = nomePaciente.GetComponent<Text>().text;

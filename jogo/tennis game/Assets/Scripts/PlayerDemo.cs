@@ -22,6 +22,7 @@ public class PlayerDemo : MonoBehaviour
     {
         transform.position = new Vector3(43.04f, -12.91f, 0.0f);
         start = 1;
+        configCalibragem.porta.Write("2");
     }
 
     // void FixedUpdate()
@@ -29,11 +30,11 @@ public class PlayerDemo : MonoBehaviour
     {
         if(configCalibragem.porta.IsOpen){
             try{
-                //envia pedido de dados de movimento na primeira vez depois é o controle do jogo que emite
-                if(start == 1){
-                    configCalibragem.porta.Write("2");
-                    start = 0;
-                }
+                // //envia pedido de dados de movimento na primeira vez depois é o controle do jogo que emite
+                // if(start == 1){
+                //     configCalibragem.porta.Write("2");
+                //     start = 0;
+                // }
 
                  if(configCalibragem.porta.BytesToRead == 0){ //Não está sendo recebido dados no buffer
                      //Debug.Log(porta.BytesToRead);

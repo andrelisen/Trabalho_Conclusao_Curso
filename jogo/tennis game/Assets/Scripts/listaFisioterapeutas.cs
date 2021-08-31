@@ -7,6 +7,10 @@ public class listaFisioterapeutas : MonoBehaviour
 
     // public Text TextBox;
 
+    string nomeFisioterapeuta;
+
+    public GameObject msgErro;
+
     void Start()
     {
         dadosJogo.Leitura();
@@ -40,13 +44,30 @@ public class listaFisioterapeutas : MonoBehaviour
 
     void DropdownItemSelected(Dropdown dropdown){
         int index = dropdown.value;
-        Debug.Log(dropdown.options[index].text);
+        // Debug.Log(dropdown.options[index].text);
+        nomeFisioterapeuta = dropdown.options[index].text;
+        if(nomeFisioterapeuta == "Selecione o seu nome"){
+            Debug.Log("Aguardando seleção para login");
+        }else{
+            
+            Debug.Log("Fisioterapeuta selecionado é: " + nomeFisioterapeuta);
+            msgErro.SetActive(false);
+        }
+
     //     TextBox.text = dropdown.options[index].text;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void SalvarFisioterapeuta(){
+        // dadosJogo.nomeFisioterapeuta = nomeFisioterapeuta.GetComponent<Text>().text;
+        if(nomeFisioterapeuta != "Selecione o seu nome"){
+            string escrita = "$\n" + System.DateTime.Now + "\n";
+            escrita = escrita + nomeFisioterapeuta;
+            dadosJogo.Salvar(escrita);
+            UnityEngine.SceneManagement.SceneManager.LoadScene("sceneLoginPaciente");
+        }else{
+            msgErro.SetActive(true);
+        }
     }
+
+
 }

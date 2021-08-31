@@ -5,9 +5,14 @@ using UnityEngine.UI;
 
 public class listaPacientes : MonoBehaviour
 {
+
+    public static string nomePaciente;
+
+    public GameObject msgErro;
+
     void Start()
     {
-        dadosJogo.Leitura();
+        // dadosJogo.Leitura();
         var dropdown = transform.GetComponent<Dropdown>();
 
         // dropdown.options.Clear();
@@ -38,13 +43,30 @@ public class listaPacientes : MonoBehaviour
 
     void DropdownItemSelected(Dropdown dropdown){
         int index = dropdown.value;
-        Debug.Log(dropdown.options[index].text);
+        nomePaciente = dropdown.options[index].text;
+
+        if(nomePaciente == "Selecione o nome do paciente"){
+            Debug.Log("Aguardando seleção do paciente");
+        }else{
+            Debug.Log("Paciente selecionado é: " + nomePaciente);
+            msgErro.SetActive(false);
+        }
+
+        // Debug.Log(dropdown.options[index].text);
     //     TextBox.text = dropdown.options[index].text;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void SalvarPaciente(){
+
+        if(nomePaciente != "Selecione o nome do paciente"){
+            string escrita = nomePaciente + "\n0\n0\n0"; 
+            dadosJogo.Salvar(escrita);
+            coletaDadosFisicos.opcao = 1;
+            controleTrocaCenas.entradaCena = 0;
+            UnityEngine.SceneManagement.SceneManager.LoadScene("sceneProximaAcao");
+        }else{
+            msgErro.SetActive(true);
+        }
     }
+
 }

@@ -62,6 +62,10 @@ public class Ball : MonoBehaviour
             if(playing){
                 if(hitter == "player"){
                     botScore++;
+                    numErros++;
+                    if(Player.numAcertos >= 1){
+                        Player.numAcertos--;
+                    }
                 }else if(hitter == "bot"){
                     playerScore++;
                 }
@@ -76,6 +80,42 @@ public class Ball : MonoBehaviour
         if(other.CompareTag("Out") && playing){
             if(hitter == "player"){
                 playerScore++;
+            }else if(hitter == "bot"){
+                botScore++;
+                numErros++;
+            }
+            playing = false;
+            UpdateScores();
+        }else if(other.CompareTag("outPlayerDir") && playing){
+            if(hitter == "player"){
+                numErros++;
+                if(Player.numAcertos >= 1){
+                    Player.numAcertos--;
+                }
+            }else if(hitter == "bot"){
+                botScore++;
+                numErros++;
+            }
+            playing = false;
+            UpdateScores();
+        }else if(other.CompareTag("outPlayerEsq") && playing){
+            if(hitter == "player"){
+                numErros++;
+                if(Player.numAcertos >= 1){
+                    Player.numAcertos--;
+                }
+            }else if(hitter == "bot"){
+                botScore++;
+                numErros++;
+            }
+            playing = false;
+            UpdateScores();
+        }else if(other.CompareTag("OutPlayer") && playing){
+            if(hitter == "player"){
+                numErros++;
+                if(Player.numAcertos >= 1){
+                    Player.numAcertos--;
+                }
             }else if(hitter == "bot"){
                 botScore++;
                 numErros++;

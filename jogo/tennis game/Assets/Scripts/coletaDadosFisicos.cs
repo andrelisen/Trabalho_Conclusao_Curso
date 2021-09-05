@@ -32,7 +32,7 @@ public class coletaDadosFisicos : MonoBehaviour
         if(escolheColeta.AnyTogglesOn() == true){
             Toggle coletar = escolheColeta.ActiveToggles().FirstOrDefault();
             string opcaoColeta = coletar.GetComponentInChildren<Text>().text;
-            Debug.Log("Opção marcada é: " + opcaoColeta);
+            // Debug.Log("Opção marcada é: " + opcaoColeta);
             if(opcaoColeta == "SIM"){ //mostra painel de entrada dos dados
                 painelEntrada.SetActive(true);
                 dadosFNecessario = 1;

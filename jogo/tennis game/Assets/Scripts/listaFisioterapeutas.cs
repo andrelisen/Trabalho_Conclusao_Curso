@@ -31,6 +31,8 @@ public class listaFisioterapeutas : MonoBehaviour
         // items.Add("Item 9");
         // items.Add("Item 10");
         // items.Add("Item 11");
+        
+        (dadosJogo.fisioterapeutas).Sort();
 
         foreach(var item in dadosJogo.fisioterapeutas){
             dropdown.options.Add(new Dropdown.OptionData(){text = item});
@@ -47,10 +49,10 @@ public class listaFisioterapeutas : MonoBehaviour
         // Debug.Log(dropdown.options[index].text);
         nomeFisioterapeuta = dropdown.options[index].text;
         if(nomeFisioterapeuta == "Selecione o seu nome"){
-            Debug.Log("Aguardando seleção para login");
+            // Debug.Log("Aguardando seleção para login");
         }else{
             
-            Debug.Log("Fisioterapeuta selecionado é: " + nomeFisioterapeuta);
+            // Debug.Log("Fisioterapeuta selecionado é: " + nomeFisioterapeuta);
             msgErro.SetActive(false);
         }
 

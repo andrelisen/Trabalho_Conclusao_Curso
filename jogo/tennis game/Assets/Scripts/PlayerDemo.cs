@@ -22,7 +22,14 @@ public class PlayerDemo : MonoBehaviour
     {
         transform.position = new Vector3(43.04f, -12.91f, 0.0f);
         start = 1;
-        configCalibragem.porta.Write("2");
+        if(configCalibragem.porta.IsOpen){
+            try{
+                configCalibragem.porta.Write("2");
+            }catch(System.Exception){
+                throw;
+            }
+        }
+            
     }
 
     // void FixedUpdate()

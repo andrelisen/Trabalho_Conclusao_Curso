@@ -42,8 +42,14 @@ EditorBuildSettings:
     path: Assets/Scenes/sceneHistorico.unity
     guid: 6e54c3beedd3a739bb715b09831a22cd
   - enabled: 1
+    path: Assets/Scenes/sceneSelecionaSessoes.unity
+    guid: cfc7e8f0e596f7c399c7e09ad4112ba2
+  - enabled: 1
     path: Assets/Scenes/sceneGraficos.unity
     guid: cb03bbb7aa4bf3215992f08e08013b6a
+  - enabled: 1
+    path: Assets/Scenes/sceneGraficoDesempenho.unity
+    guid: 9f61c2fa026affb3890c64db51c80eed
   - enabled: 1
     path: Assets/Scenes/sceneFimPartida.unity
     guid: aa84834bf727ba6aabd50da4a5da25f1

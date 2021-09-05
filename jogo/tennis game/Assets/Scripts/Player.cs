@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     public Transform aimTarget; //alvo para onde a bolinha será lançada para o lado do bot
     
     float speed = 15f; //velocidade da raquete que será multiplicada pela posição - 15 - 0.125f - 0.5f
-    float force = 25; //15
+    float force = 30; //15
     bool hitting;
 
     public Transform ball;
@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
         // porta.ReadTimeout = -1; //InfiniteTimeout = -1
         // porta.DiscardInBuffer();
         transform.position = new Vector3(43.04f, -12.91f, 0.0f);
-        numAcertos = 0;
+        numAcertos = -1;
     }
 
     // void FixedUpdate()
@@ -118,7 +118,7 @@ public class Player : MonoBehaviour
                             float andandoMesa = 0.0f;
 
                             if(direcao == "D"){
-                                while(andandoMesa < deslocamento && transform.position.z <= 8f){
+                                while(andandoMesa < deslocamento && transform.position.z <= 8f){ 
                                     // Debug.Log(1 * speed * Time.deltaTime);
                                     transform.position += new Vector3(0, 0, 1 * speed * Time.deltaTime);
                                     andandoMesa += (1 * speed * Time.deltaTime); 
@@ -197,11 +197,10 @@ public class Player : MonoBehaviour
     }
 
     //função para tratar colisões com a raquete -> bola + raquete 
-    // private void OnCollisionEnter(Collision other){
-    private void OnTriggerEnter(Collider other) {
+    private void OnCollisionEnter(Collision other){
+    //private void OnTriggerEnter(Collider other) {
         //verifica se a colisão foi com a bola
-        if(other.CompareTag("Ball")){
-            numAcertos++;
+        if(other.gameObject.CompareTag("Ball")){
             Vector3 dir;
             //movimentando target usando teclado
             if(flagDificuldade == false){
@@ -210,13 +209,14 @@ public class Player : MonoBehaviour
                 //movimentando target usando aleatoriedade
                 dir = PickTarget() - transform.position; //pega a posição do alvo para rebater a bolinha - posição atual da raquete
             }
-            other.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 6.5f, 0); //bolinha - 6
+            other.gameObject.GetComponent<Rigidbody>().velocity = dir.normalized * force + new Vector3(0, 8f, 0); //bolinha - 6
 
             Vector3 ballDir = ball.position - transform.position;
             aimTarget.position = aimTargetPosition;
 
             ball.GetComponent<Ball>().hitter = "player"; //modificando uma var. publica da class ball
             ball.GetComponent<Ball>().playing = true;
+            numAcertos++;
             // Ball.numRebates++;
         }
     }

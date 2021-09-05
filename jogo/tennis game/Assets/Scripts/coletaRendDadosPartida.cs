@@ -20,6 +20,7 @@ public class coletaRendDadosPartida : MonoBehaviour
     public GameObject modoPartida;
     //GameObject referente ao número de partidas executadas no dia da sessão deste paciente
     public GameObject aproveitamento;
+    public GameObject desempenho;
     //GameObject referente a duração da partida atual
     public GameObject duracaoPartida;
 
@@ -50,18 +51,22 @@ public class coletaRendDadosPartida : MonoBehaviour
             numAcertos.GetComponent<Text>().text = (Player.numAcertos).ToString();
             numErros.GetComponent<Text>().text = (Ball.numErros).ToString();
 
+            int pp = Ball.playerScore;
+            int pb = Ball.botScore;
             int a = Player.numAcertos;
             int r = Ball.numRebates;
-            Debug.Log("Número de acertos: " + a);
-            Debug.Log("Número de rebates: " + r);
-            double aproveitamentoAcertos =(double) a / r;
-            aproveitamentoAcertos = aproveitamentoAcertos * 100;
+            // Debug.Log("Número de acertos: " + a);
+            // Debug.Log("Número de rebates: " + r);
+            double efetividade =(double) pp / (pp + pb);
+            efetividade = efetividade * 100;
+            double desempenho =(double) (a - pp) / (r - pb);
+            desempenho = desempenho * 100;
 
-            Debug.Log("Aproveitamento: " + aproveitamentoAcertos);
-            aproveitamento.GetComponent<Text>().text = aproveitamentoAcertos.ToString("F") + "%";
+            // Debug.Log("Aproveitamento: " + aproveitamentoAcertos);
+            aproveitamento.GetComponent<Text>().text = efetividade.ToString("F") + "%";
             
             
-            escrita = escrita + (Ball.playerScore).ToString() + "," + (Ball.botScore).ToString() + "\n" + (Ball.numRebates).ToString() + "\n" + (Player.numAcertos).ToString() + "\n" +  (Ball.numErros).ToString() + "\n" + aproveitamentoAcertos.ToString("F") + "\n";
+            escrita = escrita + (Ball.playerScore).ToString() + "," + (Ball.botScore).ToString() + "\n" + (Ball.numRebates).ToString() + "\n" + (Player.numAcertos).ToString() + "\n" +  (Ball.numErros).ToString() + "\n" + efetividade.ToString("F") + "\n" + desempenho.ToString("F") + "\n";
             
             switch(controllGame.modalidadeJogo){
                 case 1: //tempo
@@ -85,15 +90,15 @@ public class coletaRendDadosPartida : MonoBehaviour
             float tempoDurantePartida = controllGame.tempoTotalPartida;
             if(tempoDurantePartida > 60f){
                 float min = tempoDurantePartida/60;
-                Debug.Log("Tempo decorrido é de " + min + "min");
+                // Debug.Log("Tempo decorrido é de " + min + "min");
                 duracaoPartida.GetComponent<Text>().text = (min).ToString() + " min";
                 escrita = escrita + (min).ToString() + "min\n*";
             }else if(tempoDurantePartida == 60f){
-                Debug.Log("Tempo decorrido é de 1 minuto");
+                // Debug.Log("Tempo decorrido é de 1 minuto");
                 duracaoPartida.GetComponent<Text>().text = "1 min";
                 escrita = escrita + "1 min\n*";
             }else if(tempoDurantePartida < 60f){
-                Debug.Log("Tempo decorrido é de " + tempoDurantePartida + "seg");
+                // Debug.Log("Tempo decorrido é de " + tempoDurantePartida + "seg");
                 duracaoPartida.GetComponent<Text>().text = (tempoDurantePartida).ToString() + "seg";
                 escrita = escrita + (tempoDurantePartida).ToString() + "seg\n*";
             }

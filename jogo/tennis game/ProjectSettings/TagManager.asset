@@ -3,7 +3,20 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Net
+  - playForaTopo
+  - Out
+  - playForaEsq
+  - playMeio
+  - playEsq
+  - Wall
+  - playDir
+  - Ball
+  - playForaDir
+  - outPlayerDir
+  - outPlayerEsq
+  - OutPlayer
   layers:
   - Default
   - TransparentFX

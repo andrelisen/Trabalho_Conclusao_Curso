@@ -39,7 +39,7 @@ public class listaHistorico : MonoBehaviour
     void Start(){
 
         // dadosJogo.Leitura();
-        dadosJogo.LeituraDPartida(listaPacientes.nomePaciente);
+        // dadosJogo.LeituraDPartida(listaPacientes.nomePaciente);
 
         toggleSessoes = new List<Toggle>();
         gerarSessoes = new List<string>();
@@ -57,9 +57,25 @@ public class listaHistorico : MonoBehaviour
 
         paciente.GetComponent<Text>().text = "Paciente: " + listaPacientes.nomePaciente;
 
-        foreach(var item in dadosJogo.dadosCadastraisPaciente){
+        List<string> dadosSessao = new List<string>();
 
 
+        foreach(var sessao in listaSessoesSelect.visualizarSessao){
+            Debug.Log("Solicitei os dados: " + sessao);
+            if(listaSessoesSelect.visualizarSessao.Count > 1){
+                Debug.Log("Maior que um");
+                dadosSessao.AddRange(dadosJogo.BuscaPartida(listaPacientes.nomePaciente, sessao));
+                // dadosSessao.AddRange(dadosJogo.BuscaPartida("Adalberto", sessao));
+            }else{
+                Debug.Log("Unico");
+                dadosSessao = dadosJogo.BuscaPartida(listaPacientes.nomePaciente, sessao);
+                // dadosSessao = dadosJogo.BuscaPartida("Adalberto", sessao);
+            }
+        }
+
+
+        foreach(var item in dadosSessao){
+        
             if(item == "Dados Cadastrais" || item == "Dados da partida") {
             // if(item.Contains("Sessão")){
                 //FORMA QUANDO DADOS CADASTRAIS OU DADOS DA PARTIDA
@@ -77,24 +93,6 @@ public class listaHistorico : MonoBehaviour
                 copy.GetComponentInChildren<Text>().color = color;
 
                 copy.SetActive(true);
-                // copy.GetComponentInChildren<Toggle>().SetEnabled(false); 
-
-                //FORMA PARA RENDERIZAR APENAS SESSÃO
-
-                // var section = Instantiate(itemSessao);
-                // section.transform.SetParent(content.transform, false);
-
-                // section.GetComponentInChildren<Toggle>().GetComponentInChildren<Text>().text = item;
-                // section.GetComponentInChildren<Toggle>().GetComponentInChildren<Text>().alignment = TextAnchor.MiddleCenter;
-
-                // Color color;
-                // ColorUtility.TryParseHtmlString("#ffd000", out color);
-                // section.GetComponentInChildren<Toggle>().GetComponentInChildren<Text>().color = color;
-
-                // toggleSessoes.Add(section.GetComponentInChildren<Toggle>());
-
-                // section.SetActive(true);
-
 
             }else if(item.Contains("Sessão")){ //É DIFERENTE
                 
@@ -105,14 +103,14 @@ public class listaHistorico : MonoBehaviour
                 section.GetComponentInChildren<Toggle>().GetComponentInChildren<Text>().alignment = TextAnchor.MiddleCenter;
 
                 Color color;
-                ColorUtility.TryParseHtmlString("#ffd000", out color);
+                ColorUtility.TryParseHtmlString("#99582a", out color);
                 section.GetComponentInChildren<Toggle>().GetComponentInChildren<Text>().color = color;
 
                 toggleSessoes.Add(section.GetComponentInChildren<Toggle>());
                 section.SetActive(true);
 
                 
-            }else if(item.Contains("Aproveitamento")){
+            }else if(item.Contains("Efetividade")){
                 var copy = Instantiate(itemTemplate);
                 copy.transform.SetParent(content.transform, false);
 
@@ -123,7 +121,23 @@ public class listaHistorico : MonoBehaviour
 
                 Color color;
 
-                ColorUtility.TryParseHtmlString("#588157", out color);
+                ColorUtility.TryParseHtmlString("#4091c9", out color);
+                copy.GetComponentInChildren<Text>().color = color;
+                copy.SetActive(true);
+                
+                // copy.GetComponentInChildren<Toggle>().SetEnabled(false);
+            }else if(item.Contains("Desempenho")){
+                var copy = Instantiate(itemTemplate);
+                copy.transform.SetParent(content.transform, false);
+
+                copy.GetComponentInChildren<Text>().text = item;
+                // copy.GetComponentInChildren<Text>().alignment = TextAnchor.MiddleCenter;
+
+                //ColorUtility.TryParseHtmlString("#09FF0064", out color);
+
+                Color color;
+
+                ColorUtility.TryParseHtmlString("#ffa62b", out color);
                 copy.GetComponentInChildren<Text>().color = color;
                 copy.SetActive(true);
                 
@@ -185,7 +199,7 @@ public class listaHistorico : MonoBehaviour
 
                 Color color;
 
-                ColorUtility.TryParseHtmlString("#d81159", out color); //
+                ColorUtility.TryParseHtmlString("#333333", out color); //
                 copy.GetComponentInChildren<Text>().color = color;
                 copy.SetActive(true);
                 
@@ -241,11 +255,6 @@ public class listaHistorico : MonoBehaviour
                 copy.SetActive(true);
             }
         }
-
-        // DontDestroyOnLoad(itemTemplate);
-        // DontDestroyOnLoad(itemSessao);
-        // DontDestroyOnLoad(content);
-
     }
 
     public void GerarGrafico(){
@@ -253,8 +262,8 @@ public class listaHistorico : MonoBehaviour
         int qntSelect = 0;
 
         foreach(var item in toggleSessoes){
-            Debug.Log("Elemento adicionado é: " + item.GetComponentInChildren<Text>().text);
-            Debug.Log("Ele está selecionado? " + item.isOn);
+            // Debug.Log("Elemento adicionado é: " + item.GetComponentInChildren<Text>().text);
+            // Debug.Log("Ele está selecionado? " + item.isOn);
             if(item.isOn){
                 qntSelect++;
                 gerarSessoes.Add(item.GetComponentInChildren<Text>().text);

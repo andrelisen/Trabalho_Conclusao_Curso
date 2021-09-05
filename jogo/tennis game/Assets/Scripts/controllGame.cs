@@ -24,7 +24,7 @@ public class controllGame : MonoBehaviour
             tempoTotalPartida += Time.deltaTime;
             switch(modalidadeJogo){
                 case 1: //tempo
-                    Debug.Log("Tempo");
+                    // Debug.Log("Tempo");
                     tempoPartida = configPartida.tempo; //lê tempo necessario
                     tempoPartida = tempoPartida * 60; //converte tempo em segundos
                     tempoDecorrido += Time.deltaTime; 

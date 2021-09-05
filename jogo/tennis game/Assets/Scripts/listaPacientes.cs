@@ -31,6 +31,8 @@ public class listaPacientes : MonoBehaviour
         // items.Add("Item 10");
         // items.Add("Item 11");
 
+        (dadosJogo.pacientes).Sort();
+
         foreach(var item in dadosJogo.pacientes){
             dropdown.options.Add(new Dropdown.OptionData(){text = item});
         }
@@ -46,9 +48,9 @@ public class listaPacientes : MonoBehaviour
         nomePaciente = dropdown.options[index].text;
 
         if(nomePaciente == "Selecione o nome do paciente"){
-            Debug.Log("Aguardando seleção do paciente");
+            // Debug.Log("Aguardando seleção do paciente");
         }else{
-            Debug.Log("Paciente selecionado é: " + nomePaciente);
+            // Debug.Log("Paciente selecionado é: " + nomePaciente);
             msgErro.SetActive(false);
         }
 

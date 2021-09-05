@@ -6,6 +6,7 @@ using CodeMonkey.Utils;
 
 public class gerarGrafico : MonoBehaviour
 {
+
     //Sprite em formato de circulo referente aos pontos do gráfico
     [SerializeField] private Sprite circleSprite;
 
@@ -33,52 +34,104 @@ public class gerarGrafico : MonoBehaviour
     //Rõtulo com o nome do paciente
     public GameObject renderizaNome;
 
+
     private void Awake(){
 
-        int controleColeta = 0;
+        if(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "sceneGraficos"){
+            int controleColeta = 0;
 
-         List<string> listaDados = new List<string>();
+            List<string> listaDados = new List<string>();
 
-        //Pega a lista de sessões que quero gerar o gráfico e coleto os dados de x e y
-        foreach(var sessao in listaHistorico.gerarSessoes){
-            Debug.Log("Gerar gráfico das sessões: " + sessao);
-            if(listaHistorico.gerarSessoes.Count > 1){
-                listaDados.AddRange(dadosJogo.BuscaPartida(listaPacientes.nomePaciente, sessao));
-            }else{
-                listaDados = dadosJogo.BuscaPartida(listaPacientes.nomePaciente, sessao);
+            //Pega a lista de sessões que quero gerar o gráfico e coleto os dados de x e y
+            foreach(var sessao in listaHistorico.gerarSessoes){
+                // Debug.Log("Gerar gráfico das sessões: " + sessao);
+                if(listaHistorico.gerarSessoes.Count > 1){
+                    listaDados.AddRange(dadosJogo.BuscaEfetividade(listaPacientes.nomePaciente, sessao));
+                    // listaDados.AddRange(dadosJogo.BuscaEfetividade("Adalberto", sessao));
+                }else{
+                    listaDados = dadosJogo.BuscaEfetividade(listaPacientes.nomePaciente, sessao);
+                    // listaDados = dadosJogo.BuscaEfetividade("Adalberto", sessao);
+                }
             }
+                
+
+            //Renderiza nome dos eixos e nome do paciente
+            eixoX.GetComponent<Text>().text = "Número de partidas";
+            eixoY.GetComponent<Text>().text = "Efetividade (%)";
+            renderizaNome.GetComponent<Text>().text = "Paciente: " + listaPacientes.nomePaciente;
+
+            //Debug.Log("Número de dados de aproveitamento: " + aproveitamento.Count);
+
+            //procura e pga referencia do container onde os pontos serão inseridos
+            graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
+
+
+            //procura e pega referncia do label x e y
+            labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
+            labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
+                
+            //procura e pega referncia das linhas x e y
+            dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
+            dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
+
+            //Cria circulo mandando sua posição 
+            // CreateCircle(new Vector2(200, 200));
+
+            //Cria uma lista de valores que serão renderizados no gráfico
+            //Usando uma lista de inteiros
+            // List<int> valueList = new List<int>(){5, 98, 56, 45, 30, 22, 17, 15, 13, 17, 25, 37};
+            // ShowGraph(valueList);
+
+            //Usando a lista criada de efetividade 
+            ShowGraph(listaDados);
+        }else if(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "sceneGraficoDesempenho"){
+            int controleColeta = 0;
+
+            List<string> listaDados = new List<string>();
+
+            //Pega a lista de sessões que quero gerar o gráfico e coleto os dados de x e y
+            foreach(var sessao in listaHistorico.gerarSessoes){
+                // Debug.Log("Gerar gráfico das sessões: " + sessao);
+                if(listaHistorico.gerarSessoes.Count > 1){
+                    listaDados.AddRange(dadosJogo.BuscaDesempenho(listaPacientes.nomePaciente, sessao));
+                    // listaDados.AddRange(dadosJogo.BuscaDesempenho("Adalberto", sessao));
+                }else{
+                    listaDados = dadosJogo.BuscaDesempenho(listaPacientes.nomePaciente, sessao);
+                    // listaDados = dadosJogo.BuscaDesempenho("Adalberto", sessao);
+                }
+            }
+                
+
+            //Renderiza nome dos eixos e nome do paciente
+            eixoX.GetComponent<Text>().text = "Número de partidas";
+            eixoY.GetComponent<Text>().text = "Desempenho (%)";
+            renderizaNome.GetComponent<Text>().text = "Paciente: " + listaPacientes.nomePaciente;
+
+            //Debug.Log("Número de dados de aproveitamento: " + aproveitamento.Count);
+
+            //procura e pga referencia do container onde os pontos serão inseridos
+            graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
+
+
+            //procura e pega referncia do label x e y
+            labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
+            labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
+                
+            //procura e pega referncia das linhas x e y
+            dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
+            dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
+
+            //Cria circulo mandando sua posição 
+            // CreateCircle(new Vector2(200, 200));
+
+            //Cria uma lista de valores que serão renderizados no gráfico
+            //Usando uma lista de inteiros
+            // List<int> valueList = new List<int>(){5, 98, 56, 45, 30, 22, 17, 15, 13, 17, 25, 37};
+            // ShowGraph(valueList);
+
+            //Usando a lista criada de efetividade 
+            ShowGraph(listaDados);
         }
-        
-
-        //Renderiza nome dos eixos e nome do paciente
-        eixoX.GetComponent<Text>().text = "Número de partidas";
-        eixoY.GetComponent<Text>().text = "Aproveitamento (%)";
-        renderizaNome.GetComponent<Text>().text = "Paciente: " + listaPacientes.nomePaciente;
-
-        //Debug.Log("Número de dados de aproveitamento: " + aproveitamento.Count);
-
-        //procura e pga referencia do container onde os pontos serão inseridos
-        graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
-
-        //procura e pega referncia do label x e y
-        labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
-        labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
-        
-        //procura e pega referncia das linhas x e y
-        dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
-        dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
-
-        //Cria circulo mandando sua posição 
-        // CreateCircle(new Vector2(200, 200));
-
-        //Cria uma lista de valores que serão renderizados no gráfico
-        //Usando uma lista de inteiros
-        // List<int> valueList = new List<int>(){5, 98, 56, 45, 30, 22, 17, 15, 13, 17, 25, 37};
-        // ShowGraph(valueList);
-
-        //Usando a lista criada de aproveitamento 
-        ShowGraph(listaDados);
-
     }
 
     //Função que ira criar o ponto no container graphcontainer - retorno do objeto criado
@@ -110,13 +163,20 @@ public class gerarGrafico : MonoBehaviour
     //Usando lista de aproveitamento
     private void ShowGraph(List<string> valueList){
         float graphHeight = graphContainer.sizeDelta.y; //Altura do container aonde vai os pontos no eixo y 
+        float graphWidth = graphContainer.sizeDelta.x; //Altura do container aonde vai os pontos no eixo y 
         float yMaximum = 100f; //valor mais alto - topo do gráfico 
-        float xSize = 50f; //distancia entre cada um dos pontos no eixo x 
+        // float xSize = 50f; //distancia entre cada um dos pontos no eixo x 
+        
+        //Máximo de itens que o gráfico vai renderizar
+        int maxVisibleValueAmount = valueList.Count;
+        float xSize = (graphWidth/maxVisibleValueAmount) + 1;
+
 
         //Referencia para o próximo gameobject - no caso o próximo ponto onde preciso criar uma linha 
         GameObject lastCircleGameObject = null;
 
         //x = posição em i; y = calcular      
+        // for(int i = 0; i< valueList.Count; i++){
         for(int i = 0; i< valueList.Count; i++){
             float xPosition = xSize + i * xSize; //soma +xSize para que o gráfico não comece bem na esquerda tenha um espaço
             float yPosition = (float.Parse(valueList[i]) / yMaximum) * graphHeight;
@@ -168,8 +228,7 @@ public class gerarGrafico : MonoBehaviour
             //Seta posição do label - mesma em x para o ponto e Configura o y para -20f
             dashX.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
             dashX.SetSiblingIndex(1);
-        }
-
+        }  
 
     } 
 

@@ -20,7 +20,7 @@ public class coletaRendDadosPartida : MonoBehaviour
     public GameObject modoPartida;
     //GameObject referente ao número de partidas executadas no dia da sessão deste paciente
     public GameObject aproveitamento;
-    public GameObject desempenho;
+    public GameObject desempenhoPartida;
     //GameObject referente a duração da partida atual
     public GameObject duracaoPartida;
 
@@ -64,6 +64,7 @@ public class coletaRendDadosPartida : MonoBehaviour
 
             // Debug.Log("Aproveitamento: " + aproveitamentoAcertos);
             aproveitamento.GetComponent<Text>().text = efetividade.ToString("F") + "%";
+            desempenhoPartida.GetComponent<Text>().text = desempenho.ToString("F") + "%";
             
             
             escrita = escrita + (Ball.playerScore).ToString() + "," + (Ball.botScore).ToString() + "\n" + (Ball.numRebates).ToString() + "\n" + (Player.numAcertos).ToString() + "\n" +  (Ball.numErros).ToString() + "\n" + efetividade.ToString("F") + "\n" + desempenho.ToString("F") + "\n";

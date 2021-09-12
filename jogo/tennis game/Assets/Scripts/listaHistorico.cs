@@ -24,6 +24,8 @@ public class listaHistorico : MonoBehaviour
     //Lista que guarda quais sessões foram selecionadas para gerar o gráfico
     public static List<string> gerarSessoes = new List<string>();
 
+    public static List<string> dadosSessao = new List<string>();
+
     public void AddButt(){
 
         for(int i = 0; i<5; i++){
@@ -57,7 +59,7 @@ public class listaHistorico : MonoBehaviour
 
         paciente.GetComponent<Text>().text = "Paciente: " + listaPacientes.nomePaciente;
 
-        List<string> dadosSessao = new List<string>();
+        dadosSessao = new List<string>();
 
 
         foreach(var sessao in listaSessoesSelect.visualizarSessao){

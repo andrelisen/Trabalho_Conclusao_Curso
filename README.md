@@ -4,3 +4,4 @@
 2) arduino = código para a placa de prototipação arduino que coleta através da comunicação Bluetooth e encaminha via comunicação Serial para o computador.
 3) arquivos = códigos exemplos desenvolvidos para auxílio na persepção do código e, também alguns códigos utilizados no desenvolvimento que precisaram ser refatorados no decorrer da criação da solução
 4) jogo = jogo em desenvolvimento utilizando Unity 3D, no qual simulará uma partida de tênis. 
+Versão da Unity para rodar o projeto: 2019.4.29f1
